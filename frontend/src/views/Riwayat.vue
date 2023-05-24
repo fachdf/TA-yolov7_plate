@@ -91,7 +91,7 @@ export default {
     methods: {
       async getDataRiwayat() {
         try {
-          const response = await axios.get('http://localhost:8080/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://192.168.34.201:8090/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           // this.items = response.data;
           const list = response.data
           const mappedRiwayat = list.map((item) => ({
