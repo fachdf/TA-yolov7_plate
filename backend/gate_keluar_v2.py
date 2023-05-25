@@ -10,6 +10,9 @@ import cloudinary.uploader
 import io
 import os 
 
+url_deploy = 'http://127.0.0.1:6009/'
+#url_deploy = 'https://gpujtk.polban.studio/'
+
 def upload_file(filename):
 
   cloudinary.config(
@@ -55,7 +58,7 @@ def capture_photo():
         encoded_image = base64.b64encode(f.read())
 
     # Set the API endpoint URL
-    url = 'http://127.0.0.1:6009/identifikasi_keluar'
+    url = url_deploy+'identifikasi_keluar'
 
     # Set the request headers
     headers = {"Content-Type": "image/jpeg"}
@@ -70,10 +73,11 @@ def capture_photo():
     response = json.loads(response.text)
     # Send the request
     #response = requests.post(url, data=image_data, headers=headers)
-    #print(response)
+    print(response)
     #response['code'] == 200
     # =200
-    if(response['code']== 200):
+    code = response['code']
+    if(code == 200):
         #print(response['user_id'])
         #print("ini urlnya: " + upload_file(filename))
         data_bukti = {
@@ -81,9 +85,20 @@ def capture_photo():
             'user_id' : response['user_id']
             #'user_id' : 54
         }
-        url_bukti = 'http://127.0.0.1:6009/update_bukti_keluar'
+        url_bukti = url_deploy+'update_bukti_keluar'
         response = requests.post(url_bukti, json=data_bukti)
-    
+    elif(code == 504):
+        print("Silahkan ulangi")
+    else:
+        #print(response['user_id'])
+        #print("ini urlnya: " + upload_file(filename))
+        data_bukti = {
+            'bukti_gagal' : upload_file(filename),
+            'user_id' : response['user_id']
+            #'user_id' : 54
+        }
+        url_bukti = url_deploy+'update_bukti_gagal'
+        response = requests.post(url_bukti, json=data_bukti)
     os.remove(filename)
 
 # Main loop
@@ -100,6 +115,5 @@ while True:
         number = (user_input)
         capture_photo()
         time.sleep(2)
-    except ValueError:
-        # Output Voice : Suara "Silahkan Coba Lagi"
-        print("Invalid input, please enter a number or 0 to exit")
+    except Exception as error:
+        print(error)

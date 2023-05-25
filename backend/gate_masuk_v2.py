@@ -9,9 +9,12 @@ import cloudinary
 import cloudinary.uploader
 import io
 import os 
+from datetime import datetime
 
+url_deploy = 'http://127.0.0.1:6009/'
+#url_deploy = 'https://gpujtk.polban.studio/'
 def upload_file(filename):
-
+  print("Uploading...")
   cloudinary.config(
     cloud_name = "jtk",
     api_key = "256473613645129",
@@ -22,6 +25,8 @@ def upload_file(filename):
         image.save(output, format='JPEG')
         image_data = output.getvalue()
   response = cloudinary.uploader.upload(image_data)
+  print("Masuk sini sih")
+  print(response['url'])
   return response['url']
 
 def capture_photo():
@@ -46,7 +51,7 @@ def capture_photo():
 
     # Save the photo to disk
     filename = "photo.jpg"
-    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
     frame = cv2.flip(frame, 1)
     
     # Save the photo to a file
@@ -57,30 +62,40 @@ def capture_photo():
         encoded_image = base64.b64encode(f.read())
 
     # Set the API endpoint URL
-    url = 'http://127.0.0.1:6009/identifikasi_masuk'
+    url = url_deploy+'identifikasi_masuk'
 
     # Set the request headers
-    headers = {"Content-Type": "image/jpeg"}
+    headers = {'Content-Type': 'application/json'}
     
     data = {
-        'photo': encoded_image.decode('utf-8'),
-        'filename': number
+         "photo": encoded_image.decode('utf-8'),
+         "filename": number
     }
-
-
-    response = requests.post(url, json=data)
+    now = datetime.now()
+    response = requests.post(url, json.dumps(data), headers=headers)
     response = json.loads(response.text)
+    then = datetime.now()
     # Send the request
     #response = requests.post(url, data=image_data, headers=headers)
-    print(response)
-    if(response['code'] == 200):
-        #print(response['user_id'])
-        #print("ini urlnya: " + upload_file(filename))
+    print(then-now)
+    print(response['message'])
+    print(response['code'])
+    code = response['code']
+    if(code == 200):
         data_bukti = {
             'bukti_masuk' : upload_file(filename),
             'user_id' : response['user_id']
         }
-        url_bukti = 'http://127.0.0.1:6009/update_bukti_masuk'
+        url_bukti = url_deploy + 'update_bukti_masuk'
+        response = requests.post(url_bukti, json=data_bukti)
+    elif(code == 504):
+        print("Silahkan ulangi")
+    else:
+        data_bukti = {
+            'bukti_gagal' : upload_file(filename),
+            'user_id' : response['user_id']
+        }
+        url_bukti = url_deploy + 'update_bukti_gagal'
         response = requests.post(url_bukti, json=data_bukti)
     
     os.remove(filename)
@@ -99,8 +114,8 @@ while True:
         number = (user_input)
         capture_photo()
         time.sleep(2)
-    except ValueError:
-        print("Invalid input, please enter a number or 0 to exit")
+    except Exception as error:
+        print(error)
 
 # RFID test = 12345678901
 

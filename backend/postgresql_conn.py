@@ -65,7 +65,7 @@ def update_gate_status(id, status):
         return f"Error while saving new gate to database: {error}"
 
 # Fungsi untuk etry data mahasiswa masuk ; return id
-def add_mhs_masuk(rfid, pelat):
+def add_mhs_masuk(rfid, pelat, status):
     try:
         # Connect to the PostgreSQL database
         conn = psycopg2.connect(
@@ -88,7 +88,7 @@ def add_mhs_masuk(rfid, pelat):
 
         sql = "INSERT INTO mahasiswa (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s) RETURNING user_id;"
 
-        data = (rfid, pelat, 0)
+        data = (rfid, pelat, status)
         cur.execute(sql, data)
         new_id = cur.fetchone()[0]
         # Commit the transaction
@@ -107,6 +107,7 @@ def add_mhs_masuk(rfid, pelat):
         conn.rollback()
         return f"Error while saving new user to database: {error}"
 
+# Entry data mahasiswa gagal masuk/keluar
 # Fungsi untuk mengubah status mhs setelah keluar (0 = masuk, 1 = keluar, 2 = gagal scan) ; return id
 def update_mhs_keluar(rfid, status):
     try:
@@ -147,6 +148,8 @@ def update_mhs_keluar(rfid, status):
         conn.rollback()
         return None
 
+# Fungsi untuk menambahkan mahasiswa keluar namun rfid belum pernah digunakan untuk masuk
+
 def get_mhs_data_by_rfid(rfid):
     try:
         # establish a connection to the database
@@ -162,6 +165,41 @@ def get_mhs_data_by_rfid(rfid):
         
         # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
         cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_rfid = %s AND user_status = %s", (rfid, 0))
+        
+        # fetch all the rows from the result set
+        rows = cur.fetchall()
+
+        # return the retrieved data
+        if len(rows) > 0:
+            #print(len(rows))
+            return rows
+        else:
+            return None
+        
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return None
+        
+    finally:
+        # close the cursor and connection objects
+        cur.close()
+        conn.close()
+
+def get_mhs_data_by_pelat(pelat):
+    try:
+        # establish a connection to the database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+
+        # create a cursor object
+        cur = conn.cursor()
+        
+        # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
+        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_pelat = %s AND user_status = %s", (pelat, 0))
         
         # fetch all the rows from the result set
         rows = cur.fetchall()
@@ -265,7 +303,7 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
         # Create a cursor object
         cur = conn.cursor()
         
-        now = datetime.now() # Create timestamp
+        now = datetime.now(now) # Create timestamp
 
         # Execute the SQL query to insert the text into the database
         cur.execute("INSERT INTO riwayat_parkir (bukti_masuk, waktu_masuk, user_user_id) VALUES (%s, %s, %s)", (bukti_masuk, now, id_mhs))
@@ -286,7 +324,7 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
         return f"Error while saving new riwayat to database: {error}"
 
 # Menambah riwayat masuk hanya id tanpa bukti
-def add_riwayat_masuk(id_mhs):
+def add_riwayat_masuk(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
         conn = psycopg2.connect(
@@ -302,7 +340,7 @@ def add_riwayat_masuk(id_mhs):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("INSERT INTO riwayat_parkir (waktu_masuk, user_user_id) VALUES (%s, %s)", (now, id_mhs))
+        cur.execute("INSERT INTO riwayat_parkir (waktu_masuk, user_user_id, keterangan) VALUES (%s, %s, %s)", (now, id_mhs, keterangan))
         
         # Commit the transaction
         conn.commit()
@@ -312,7 +350,73 @@ def add_riwayat_masuk(id_mhs):
         conn.close()
         
         # Return a success message
-        return "Mhs and Riwayat saved to database successfully"
+        return keterangan
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
+def add_riwayat_gagal(id_mhs, keterangan):
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+        
+        now = datetime.now() # Create timestamp
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("INSERT INTO riwayat_parkir (waktu_akses_gagal, user_user_id, keterangan) VALUES (%s, %s, %s)", (now, id_mhs, keterangan))
+        
+        # Commit the transaction
+        conn.commit()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return keterangan
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
+def update_riwayat_gagal(id_mhs, keterangan):
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+        
+        now = datetime.now() # Create timestamp
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("UPDATE riwayat_parkir SET waktu_akses_gagal = %s, keterangan = %s WHERE user_user_id = %s", (now, keterangan, id_mhs ))
+        
+        # Commit the transaction
+        conn.commit()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return keterangan
     
     except (Exception, psycopg2.DatabaseError) as error:
         # If an error occurs, rollback the transaction and return an error message
@@ -335,6 +439,37 @@ def update_bukti_masuk(bukti_masuk, user_id):
 
         # Execute the SQL query to insert the text into the database
         cur.execute("UPDATE riwayat_parkir SET bukti_masuk = %s WHERE user_user_id = %s", (bukti_masuk, user_id))
+        
+        # Commit the transaction
+        conn.commit()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return "Bukti masuk URL saved to database successfully"
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
+def update_bukti_gagal(bukti_gagal, user_id):
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("UPDATE riwayat_parkir SET bukti_akses_gagal = %s WHERE user_user_id = %s", (bukti_gagal, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -386,7 +521,7 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
         return f"Error while saving new riwayat to database: {error}"
 
 # Update riwayat keluar tanpa bukti
-def update_riwayat_keluar(user_id):
+def update_riwayat_keluar(user_id, keterangan):
     try:
         # Connect to the PostgreSQL database
         conn = psycopg2.connect(
@@ -402,7 +537,7 @@ def update_riwayat_keluar(user_id):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s WHERE user_user_id = %s", ( now, user_id))
+        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, keterangan = %s WHERE user_user_id = %s", (now, keterangan, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -412,7 +547,7 @@ def update_riwayat_keluar(user_id):
         conn.close()
         
         # Return a success message
-        return "Mhs saved to database successfully"
+        return keterangan
     
     except (Exception, psycopg2.DatabaseError) as error:
         # If an error occurs, rollback the transaction and return an error message
@@ -465,7 +600,38 @@ def get_all_riwayat_parkir():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, m.user_pelat, m.user_rfid, m.user_status FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id")
+        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id")
+        
+        # Commit the transaction
+        rows = cur.fetchall()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return rows
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
+def get_all_riwayat_gagal():
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status IN (2,3)")
         
         # Commit the transaction
         rows = cur.fetchall()
@@ -589,5 +755,7 @@ if __name__ == '__main__':
     #res = get_jml_parkir()
     #mhs =  get_mhs_data_by_rfid("12345678906")
     #res = update_bukti_keluar("https://res.cloudinary.com/jtk/image/upload/v1684497128/gwqd188isqicobc4yqc5.jpg", 52)
-    res = get_jml_problem_parkir()
+    #res = get_jml_problem_parkir()
+    #res = add_mhs_masuk("test1", "test2", 0)
+    res = get_all_riwayat_gagal()
     print(res)
