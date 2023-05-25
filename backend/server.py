@@ -11,8 +11,15 @@ import cloudinary
 # import cloudinary.uploader
 from PIL import Image
 import io
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+cors = CORS(app, resource={
+    r"/*":{
+        "origins":"*"
+    }
+})
 # cloudinary.config(
 #   cloud_name = "jtk",
 #   api_key = "256473613645129",
