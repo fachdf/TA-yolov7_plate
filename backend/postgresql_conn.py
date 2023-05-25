@@ -648,6 +648,37 @@ def get_all_riwayat_gagal():
         conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
 
+def get_all_peringatan_gagal():
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
+        
+        # Commit the transaction
+        rows = cur.fetchall()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return rows
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
 def get_jml_parkir():
     try:
         # Connect to the PostgreSQL database
@@ -757,5 +788,5 @@ if __name__ == '__main__':
     #res = update_bukti_keluar("https://res.cloudinary.com/jtk/image/upload/v1684497128/gwqd188isqicobc4yqc5.jpg", 52)
     #res = get_jml_problem_parkir()
     #res = add_mhs_masuk("test1", "test2", 0)
-    res = get_all_riwayat_gagal()
+    res = get_all_peringatan_gagal()
     print(res)

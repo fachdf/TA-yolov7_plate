@@ -173,7 +173,7 @@ def get_riwayat_parkir():
     data = get_all_riwayat_parkir()
     return data
 
-# Get riwayat  with status 3
+# Get riwayat  with status 2-3
 @app.route('/get_riwayat_gagal', methods=['GET'])
 #
 # Requirement : Input = - 
@@ -181,6 +181,17 @@ def get_riwayat_parkir():
 # 
 def get_riwayat_gagal():
     data = get_all_riwayat_gagal()
+    return data
+
+
+# Get riwayat  with status 2
+@app.route('/get_peringatan_gagal', methods=['GET'])
+#
+# Requirement : Input = - 
+#               Output = Record riwayat parkir
+# 
+def get_peringatan_gagal():
+    data = get_all_peringatan_gagal()
     return data
 
 @app.route('/get_riwayat_count', methods=['GET'])
@@ -242,6 +253,7 @@ def update_mhs_bukti_gagal():
     print(bukti_gagal)
     print(user_id)
     return update_bukti_gagal(bukti_gagal, user_id)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8099, host=0.0.0.0)
