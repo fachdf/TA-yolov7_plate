@@ -256,4 +256,4 @@ def update_mhs_bukti_gagal():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8099, host=0.0.0.0)
+    app.run(debug=True, port=8099, host='0.0.0.0')

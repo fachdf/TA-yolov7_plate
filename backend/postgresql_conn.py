@@ -600,7 +600,7 @@ def get_all_riwayat_parkir():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id")
+        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id")
         
         # Commit the transaction
         rows = cur.fetchall()
@@ -631,7 +631,7 @@ def get_all_riwayat_gagal():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status IN (2,3)")
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status IN (2,3)")
         
         # Commit the transaction
         rows = cur.fetchall()
@@ -662,7 +662,7 @@ def get_all_peringatan_gagal():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
         
         # Commit the transaction
         rows = cur.fetchall()

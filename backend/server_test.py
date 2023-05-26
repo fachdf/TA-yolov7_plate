@@ -1,5 +1,6 @@
-from server import *
+# from server import *
 import time
+import sys
 
 import requests,json
 def test():
@@ -17,5 +18,7 @@ def test():
         print(response.text)    
         print(f"Elapsed time: {elapsed_time} seconds")
 
+def print_func():
+    print("args")
 if __name__ == '__main__':
-    test()
+    globals()[sys.argv[1]]()
