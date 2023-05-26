@@ -254,6 +254,19 @@ def update_mhs_bukti_gagal():
     print(user_id)
     return update_bukti_gagal(bukti_gagal, user_id)
 
+@app.route('/update_mhs_izinkan_keluar', methods=['POST'])
+def update_mhs_izinkan_keluar():
+    data = request.get_json()
+    mhs_id = data['mhs_id']
+    bukti_akses_gagal = data['bukti_akses_gagal']
+    return update_izinkan_keluar(bukti_akses_gagal, mhs_id)
+
+@app.route('/update_mhs_tolak_keluar', methods=['POST'])
+def update_mhs_tolak_keluar():
+    data = request.get_json()
+    mhs_id = data['mhs_id']
+    #bukti_akses_gagal = data['bukti_akses_gagal']
+    return update_tolak_keluar(mhs_id)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8099, host='0.0.0.0')

@@ -585,7 +585,71 @@ def update_bukti_keluar(bukti_keluar, user_id):
         # If an error occurs, rollback the transaction and return an error message
         conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
+###
+def update_izinkan_keluar(bukti_keluar, user_id):
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
 
+        now = datetime.now() 
+        # Execute the SQL query to insert the text into the database
+        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s WHERE user_user_id = %s", (now, bukti_keluar, user_id))
+        cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (1, user_id))
+        # Commit the transaction
+        conn.commit()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return "Bukti keluar URL saved to database successfully"
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+####
+def update_tolak_keluar(user_id):
+    try:
+        # Connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",
+            database="gateparking",
+            user="postgres",
+            password="postgres"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+
+        now = datetime.now() 
+        # Execute the SQL query to insert the text into the database
+        #cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s WHERE user_user_id = %s", (now, bukti_keluar, user_id))
+        cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (0, user_id))
+        # Commit the transaction
+        conn.commit()
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return "Bukti keluar URL saved to database successfully"
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+####
 def get_all_riwayat_parkir():
     try:
         # Connect to the PostgreSQL database
@@ -788,5 +852,6 @@ if __name__ == '__main__':
     #res = update_bukti_keluar("https://res.cloudinary.com/jtk/image/upload/v1684497128/gwqd188isqicobc4yqc5.jpg", 52)
     #res = get_jml_problem_parkir()
     #res = add_mhs_masuk("test1", "test2", 0)
-    res = get_all_peringatan_gagal()
+    #res = get_all_peringatan_gagal()
+    res = update_izinkan_keluar("test/test.jpg", 34)
     print(res)
