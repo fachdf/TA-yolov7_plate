@@ -1,6 +1,5 @@
 import cv2
 import base64
-import tkinter as tk
 from PIL import Image, ImageTk
 from detect_rec_plate_custom import main
 import time
@@ -10,8 +9,9 @@ import cloudinary.uploader
 import io
 import os 
 from datetime import datetime
+import playsound
 
-url_deploy = 'http://127.0.0.1:6009/'
+url_deploy = 'http://127.0.0.1:8099/'
 #url_deploy = 'https://gpujtk.polban.studio/'
 def upload_file(filename):
   print("Uploading...")
@@ -74,13 +74,32 @@ def capture_photo():
     now = datetime.now()
     response = requests.post(url, json.dumps(data), headers=headers)
     response = json.loads(response.text)
-    then = datetime.now()
+    
+    code = response['code']
     # Send the request
     #response = requests.post(url, data=image_data, headers=headers)
+    print("Time : ")
     print(then-now)
+    if(code == 500):
+        playsound.playsound('sound\\500.mp3', True) 
+    elif(code == 501):
+        playsound.playsound('sound\\501.mp3', True)
+    elif(code == 502):
+        playsound.playsound('sound\\502.mp3', True)
+    elif(code == 503):
+        playsound.playsound('sound\\503.mp3', True)
+    elif(code == 504):
+        playsound.playsound('sound\\504.mp3', True)
+    elif(code == 505):
+        playsound.playsound('sound\\505.mp3', True)
+    elif(code == 506):
+        playsound.playsound('sound\\506.mp3', True)  
+    elif(code == 200):
+        playsound.playsound('sound\\200_01.mp3', True)  
+
     print(response['message'])
     print(response['code'])
-    code = response['code']
+    # code = response['code']
     if(code == 200):
         data_bukti = {
             'bukti_masuk' : upload_file(filename),
@@ -97,6 +116,7 @@ def capture_photo():
         }
         url_bukti = url_deploy + 'update_bukti_gagal'
         response = requests.post(url_bukti, json=data_bukti)
+
     
     os.remove(filename)
 
