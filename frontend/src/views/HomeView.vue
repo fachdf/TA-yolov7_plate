@@ -78,63 +78,16 @@
         class="mb-6"
         no-gutters
        >
-        <v-col
-        sm="5"
-        md="6"
-        mr=auto
-        >
-          <v-list>
-            <v-list-item v-for="(notification, index) in notifications" :key="index">
-              <v-list-item-avatar>
-                <v-icon color="red">{{ notification.icon }}</v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>{{ notification.title }}</v-list-item-title>
-                <v-list-item-subtitle>{{ notification.message }}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-
-        <v-col
-        class="right-side-pemberitahuan"
-        sm="5"
-        offset-sm="2"
-        md="6"
-        pr="20"
-        offset-md="0"
-        >
-          <v-btn
-          color="success"
-          class="ma-2 mt-4 white--text"
-          large
-          >
-            <v-icon
-            right
-            dark
-            class="mr-2"
-            >
-              mdi-check
-            </v-icon>
-            Izinkan
-          </v-btn>
-
-          <v-btn
-          color="red"
-          class="ma-2 mt-4 white--text"
-          large
-          outlined
-          >
-            <v-icon
-            right
-            dark
-            class="mr-2"
-            >
-              mdi-close
-            </v-icon>
-            Tolak
-          </v-btn>
-        </v-col>
+       <v-container>
+        <v-row>
+          <v-col 
+          sm="5"
+          md="6"
+          mr=auto v-for="notification in notifications" :key="notification.id">
+            <notification-card :notification="notification" />
+          </v-col>
+        </v-row>
+       </v-container>
       </v-row>
     </v-card>
   </v-container>
@@ -142,8 +95,12 @@
 
 <script>
 import axios from 'axios'
+import NotificationCard from '@/components/NotificationComponent.vue';
 
   export default{
+    components: {
+      NotificationCard,
+    },
     data() {
       return {
         totalMasuk: null,
@@ -154,13 +111,8 @@ import axios from 'axios'
         alertTitle: 'Peringatan',
         alertMessage: 'RFID dan Pelat Nomor tidak cocok di Gate Keluar, Mohon untuk ditindaklanjuti.',
         message: 'Hello, world!',
-        notifications: [
-          {
-            icon: 'mdi-alert',
-            title: 'Alert',
-            message: 'RFID dan Pelat Nomor tidak cocok di Gate Keluar, Mohon untuk ditindaklanjuti'
-          }
-        ]
+        icon: 'mdi-alert',
+        notifications: []
       }
     },
 
@@ -171,7 +123,9 @@ import axios from 'axios'
       setInterval(this.getDataJumlahKeluar, 3000);
       this.getDataJumlahPeringatan();
       setInterval(this.getDataJumlahPeringatan, 3000);
-      setInterval(this.getCurrentDate, 1000)
+      this.getNotification();
+      setInterval(this.getNotification, 3000);
+      setInterval(this.getCurrentDate, 1000);
     },
 
     methods: {
@@ -202,6 +156,27 @@ import axios from 'axios'
             console.error(error);
           }
         },
+
+        async getNotification() {
+        try {
+          const response = await axios.get('http://192.168.34.201:8090/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          // this.items = response.data;
+          const list = response.data
+          const mappedRiwayatAkses = list.map((item) => ({
+            BuktiAkses: item[0],
+            WaktuAkses: item[1],
+            PelatNomor: item[2],
+            RFID: item[3],
+            Status: item[4],
+            Keterangan: item[5],
+            IDMahasiswa: item[6]
+          }));
+          this.notifications = mappedRiwayatAkses
+          console.log(response)
+        } catch (error) {
+          console.error(error);
+        }
+      },
         
         // getStatusColor(gateStatus) {
         //     // Fungsi ini mengembalikan warna berdasarkan nilai status

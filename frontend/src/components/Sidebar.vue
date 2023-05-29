@@ -52,7 +52,7 @@
         items: [
           { title: 'Home', icon: 'mdi-home-city', route:'/' },
           { title: 'Riwayat', icon: 'mdi-history', route:'/riwayat' },
-          // { title: 'Status', icon: 'mdi-list-status',route:'/status' },
+          //{ title: 'Riwayat Baru', icon: 'mdi-list-status',route:'/status' },
         ],
         right:null,
       }
