@@ -1,8 +1,11 @@
 # from server import *
 import time
 import sys
-
+import playsound
 import requests,json
+import os
+os.add_dll_directory(os.getcwd())
+
 def test():
     # Set the API endpoint URL
     
@@ -20,5 +23,17 @@ def test():
 
 def print_func():
     print("args")
+
+def play_sound():
+    # sound_file = 'sound/verifikasi_gagal.mp3'
+    # player = vlc.MediaPlayer("file://" + sound_file)
+    playsound.playsound('sound\\500.mp3', True)
+    playsound.playsound('sound\\502.mp3', True)
+    playsound.playsound('sound\\503.mp3', True)
+    playsound.playsound('sound\\505.mp3', True)
+    #playsound.
+    #player.play()
+
 if __name__ == '__main__':
-    globals()[sys.argv[1]]()
+    #globals()[sys.argv[1]]()
+    play_sound()
