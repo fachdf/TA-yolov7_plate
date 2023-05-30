@@ -1,93 +1,92 @@
 <template>
   <v-container class="grey lighten-5">
-    <!-- Stack the columns on mobile by making one full-width and the other half-width -->
-        <v-card
-          class="left-side"
-          outlined
-          tile
+    <v-card
+      class="left-side"
+      outlined
+      tile
+    >
+      <v-row
+      class="mb-6"
+      no-gutters
+      >
+        <v-col
+        sm="5"
+        md="6"
+        mr=auto
         >
-        <v-row
-        class="mb-6"
-        no-gutters
+          <v-card-title class="title">Pengguna Gate Parking Otomatis</v-card-title>
+        </v-col>
+        <v-col
+        sm="5"
+        offset-sm="2"
+        md="6"
+        offset-md="0"
         >
-          <v-col
-          sm="5"
-          md="6"
-          mr=auto
-          >
-            <v-card-title class="title">Pengguna Gate Parking Otomatis</v-card-title>
+          <v-card-subtitle class="subtitle">{{ getCurrentDate() }}</v-card-subtitle>
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters class="content" fluid>
+        <v-row justify="center">
+          <v-col cols="12" md="4">
+            <v-card color="success" dark>
+              <v-card-text>
+                <div class="headline white--text">
+                  <v-icon
+                  large
+                  color="white"> mdi-import </v-icon>
+                  Masuk
+                </div>
+                <div class="text-h2 white--text text-left" >{{ totalMasuk }}</div>
+              </v-card-text>
+            </v-card>
           </v-col>
-          <v-col
-          sm="5"
-          offset-sm="2"
-          md="6"
-          offset-md="0"
-          >
-            <v-card-subtitle class="subtitle">{{ getCurrentDate() }}</v-card-subtitle>
+          <v-col cols="12" md="4">
+            <v-card color="warning" dark>
+              <v-card-text>
+                <div class="headline white--text">
+                  <v-icon
+                  large
+                  color="white"> mdi-export </v-icon>
+                  Keluar
+                </div>
+                <div class="text-h2 white--text text-left">{{ totalKeluar }}</div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-card color="red">
+              <v-card-text>
+                <div class="headline white--text">
+                  <v-icon
+                  large
+                  color="white"> mdi-alert-outline </v-icon>
+                  Peringatan
+                </div>
+                <div class="text-h2 white--text text-left">{{ totalPeringatan }}</div>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
-
-        <v-row no-gutters class="content" fluid>
-          <v-row justify="center">
-            <v-col cols="12" md="4">
-              <v-card color="success" dark>
-                <v-card-text>
-                  <div class="headline white--text">
-                    <v-icon
-                    large
-                    color="white"> mdi-import </v-icon>
-                    Masuk
-                  </div>
-                  <div class="text-h2 white--text text-left" >{{ totalMasuk }}</div>
-                </v-card-text>
-              </v-card>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-card color="warning" dark>
-                <v-card-text>
-                  <div class="headline white--text">
-                    <v-icon
-                    large
-                    color="white"> mdi-export </v-icon>
-                    Keluar
-                  </div>
-                  <div class="text-h2 white--text text-left">{{ totalKeluar }}</div>
-                </v-card-text>
-              </v-card>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-card color="red">
-                <v-card-text>
-                  <div class="headline white--text">
-                    <v-icon
-                    large
-                    color="white"> mdi-alert-outline </v-icon>
-                    Peringatan
-                  </div>
-                  <div class="text-h2 white--text text-left">{{ totalPeringatan }}</div>
-                </v-card-text>
-              </v-card>
+      </v-row>
+    </v-card>
+      <!-- <notification-component ref="notificationComponent"></notification-component> -->
+    <v-card class="mt-6">
+      <v-card-title class="title">Pemberitahuan</v-card-title>
+      <v-row
+      class="mb-6"
+      no-gutters
+      >
+        <v-container>
+          <v-row>
+            <v-col 
+            sm="5"
+            md="6"
+            mr=auto v-for="notification in notifications" :key="notification.id">
+              <notification-card :notification="notification" />
             </v-col>
           </v-row>
-        </v-row>
-      </v-card>
-      <!-- <notification-component ref="notificationComponent"></notification-component> -->
-      <v-card class="mt-6">
-        <v-card-title class="title">Pemberitahuan</v-card-title>
-        <v-row
-        class="mb-6"
-        no-gutters
-       >
-       <v-container>
-        <v-row>
-          <v-col 
-          sm="5"
-          md="6"
-          mr=auto v-for="notification in notifications" :key="notification.id">
-            <notification-card :notification="notification" />
-          </v-col>
-        </v-row>
-       </v-container>
+        </v-container>
       </v-row>
     </v-card>
   </v-container>
@@ -200,7 +199,7 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
 <style scoped>
 .title{
-  color: orange;
+  color: #FB9503;
   font-display: bold;
   font-size: x-large;
   
@@ -215,6 +214,8 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 .subtitle{
   text-align: right;
   margin-top: 8px;
+  font-display: bold;
+  
 }
 .content{
   padding-right: 16px;

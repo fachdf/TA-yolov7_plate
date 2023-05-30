@@ -3,6 +3,7 @@
       app
       permanent
       left
+      width="auto"
     >
       <template v-slot:prepend>
         <v-list-item two-line>
@@ -12,7 +13,7 @@
 
           <div class="title">
           <v-list-item-content>
-            <v-list-item-title class="text-h7">Gate Parking Otomatis</v-list-item-title>
+            <v-list-item-title class="text-h6">Gate Parking Otomatis</v-list-item-title>
           </v-list-item-content>
           </div>
         </v-list-item>
@@ -32,7 +33,7 @@
           link
         >
           <v-list-item-icon>
-            <v-icon color="orange">{{ item.icon }}</v-icon>
+            <v-icon color="#FB9503">{{ item.icon }}</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
@@ -63,9 +64,9 @@
 <style>
 .title{
   font-size: large;
-  color: orange;
+  color: #FB9503;
 }
 .icon{
-  color: orange;
+  color: #FB9503;
 }
 </style>

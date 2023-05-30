@@ -10,15 +10,24 @@
       <v-spacer></v-spacer>
     </v-card-title>
 
-    <v-tabs v-model="selectedTab" class="pl-4" fixed-tabs color="orange">
+    <v-tabs v-model="selectedTab" class="pl-4" fixed-tabs color="#FB9503">
       <v-tab v-for="(tab, index) in tabs" :key="index">
         {{ tab.title }}
       </v-tab>
     </v-tabs>
     
-
     <v-tabs-items v-model="selectedTab" class="left-side">
       <v-tab-item v-for="(tab, index) in tabs" :key="index">
+        <v-card-text>
+        <p class="text-h6 text-color-#FB9503" color="#FB9503"> Keterangan Status</p>
+        <p>
+          0 = Mahasiswa masih didalam area parkir 
+          <br> 
+          1 = Mahasiswa sudah keluar area parkir
+          <br>
+          2 = Mahasiswa masih didalam area parkir (masalah)
+        </p>
+      </v-card-text>
         <v-col 
         sm="5"
         md="6"
@@ -48,12 +57,12 @@
           </v-btn>
         </template>
         <template v-slot:[`item.BuktiKeluar`]="{item}">
-          <v-btn color="orange" rounded @click="openDialog(item.BuktiKeluar)">
+          <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
             Lihat Bukti
           </v-btn>
         </template>
         <template v-slot:[`item.BuktiAkses1`]="{item}">
-          <v-btn color="orange" rounded @click="openDialog(item.BuktiAkses1)">
+          <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)">
             Lihat Bukti
           </v-btn>
         </template>
@@ -73,6 +82,7 @@
 
 <script>
 import axios from 'axios'
+import pool from '@/db.js'
 export default {
   name: 'riwayat-page',
   data() {
@@ -181,6 +191,16 @@ export default {
         this.popupLink = '';
       },
 
+      fetchData() {
+        pool.query('SELECT * FROM your_table', (error, results) => {
+          if (error) {
+            console.error("Gagal mengambil data:", error);
+          } else {
+            this.data = results.rows;
+          }
+        });
+      },
+
       getFilteredItems(index) {
         if (index === 0) {
           return this.filteredData1;
@@ -225,7 +245,7 @@ export default {
 
 <style scoped>
 .title{
-color: orange;
+color: #FB9503;
 font-display: bold;
 }
 .left-side{
