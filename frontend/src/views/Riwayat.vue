@@ -191,15 +191,15 @@ export default {
         this.popupLink = '';
       },
 
-      fetchData() {
-        pool.query('SELECT * FROM your_table', (error, results) => {
-          if (error) {
-            console.error("Gagal mengambil data:", error);
-          } else {
-            this.data = results.rows;
-          }
-        });
-      },
+      // fetchData() {
+      //   pool.query('SELECT * FROM your_table', (error, results) => {
+      //     if (error) {
+      //       console.error("Gagal mengambil data:", error);
+      //     } else {
+      //       this.data = results.rows;
+      //     }
+      //   });
+      // },
 
       getFilteredItems(index) {
         if (index === 0) {
