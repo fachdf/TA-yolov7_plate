@@ -11,7 +11,8 @@ import os
 from datetime import datetime
 import playsound
 
-url_deploy = 'http://127.0.0.1:8099/'
+#url_deploy = 'http://192.168.34.201:8099/'
+url_deploy = 'http://localhost:8099/'
 #url_deploy = 'https://gpujtk.polban.studio/'
 def upload_file(filename):
   print("Uploading...")
@@ -52,7 +53,7 @@ def capture_photo():
     # Save the photo to disk
     filename = "photo.jpg"
     #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
-    frame = cv2.flip(frame, 1)
+    #frame = cv2.flip(frame, 1)
     
     # Save the photo to a file
     cv2.imwrite(filename, frame)
@@ -118,7 +119,7 @@ def capture_photo():
         response = requests.post(url_bukti, json=data_bukti)
 
     
-    os.remove(filename)
+   #os.remove(filename)
 
 # Main loop
 while True:

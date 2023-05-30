@@ -150,7 +150,7 @@ def identifikasi_keluar():
                 result = add_riwayat_gagal(id_mhs, keterangan)
             else: # Kalo pelat beda & RFID beda
                 status = 3
-                id_mhs = add_mhs_masuk(rfid, status)
+                id_mhs = update_mhs_keluar(rfid, status)
                 keterangan = "RFID dan Pelat Nomor tidak terdaftar"
                 result = add_riwayat_gagal(id_mhs, keterangan)
                 code = 505 # RFID Beda pelat tidak ada

@@ -11,7 +11,7 @@ import os
 import playsound
 from datetime import datetime 
 
-url_deploy = 'http://127.0.0.1:8099/'
+url_deploy = 'http://192.168.34.201:8099/'
 #url_deploy = 'https://gpujtk.polban.studio/'
 
 def upload_file(filename):
