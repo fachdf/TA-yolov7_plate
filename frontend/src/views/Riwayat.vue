@@ -82,7 +82,7 @@
 
 <script>
 import axios from 'axios'
-import pool from '@/db.js'
+
 export default {
   name: 'riwayat-page',
   data() {
