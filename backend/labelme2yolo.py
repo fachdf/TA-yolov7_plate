@@ -70,8 +70,8 @@ def four_point_transform(image, pts):
             
 if __name__ == "__main__":
     pic_file_list = []
-    pic_file = "D:/TUGASAKHIR/Dataset/Dataset_Baru/"
-    save_small_path = "D:/TUGASAKHIR/Dataset/Dataset_Baru/small/"
+    pic_file = "D:/TUGASAKHIR/Dataset/DatasetMei-fix/"
+    save_small_path = "D:/TUGASAKHIR/Dataset/DatasetMei-fix/fix/"
     label_file = ['Plat']
     allFilePath(pic_file,pic_file_list)
     count=0

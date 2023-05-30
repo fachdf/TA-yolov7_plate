@@ -74,7 +74,7 @@ def capture_photo():
     now = datetime.now()
     response = requests.post(url, json.dumps(data), headers=headers)
     response = json.loads(response.text)
-    
+    then = datetime.now()
     code = response['code']
     # Send the request
     #response = requests.post(url, data=image_data, headers=headers)
