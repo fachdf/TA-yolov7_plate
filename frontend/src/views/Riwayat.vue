@@ -28,6 +28,7 @@
           2 = Mahasiswa masih didalam area parkir (masalah)
         </p>
       </v-card-text>
+      <v-row>
         <v-col 
         sm="5"
         md="6"
@@ -35,15 +36,32 @@
         >
           <v-select
           max-width="344"
-          class="left-input pt-4 pl-4 pr-4 mx-auto"
+          class="left-input pt-4 pl-4 mx-auto"
           v-model="tab.selectedFilter"
-          :items="tab.filteredOptions"
+          :items="tab.filterOptions"
           label="Filter Status"
           outlined
           dense
           ></v-select>
         </v-col>
-        
+
+        <v-col
+        sm="5"
+        offset-sm="2"
+        md="6"
+        offset-md="0"
+        >
+          <v-select
+          max-width="344"
+          class="left-input pt-4 pr-4 mx-auto"
+          v-model="selectedTimeFilter"
+          :items="tab.timeFilterOptions"
+          label="Filter Waktu Masuk"
+          outlined
+          dense
+          ></v-select>
+        </v-col>
+      </v-row>  
         <v-data-table 
         :headers="tab.headers" 
         :items="getFilteredItems(index)" 
@@ -51,29 +69,29 @@
         :sort-by.sync="tab.sortBy"
         :sort-desc.sync="tab.sortAsc"
         class="elevation-1 pl-4 pr-4">
-        <template v-slot:[`item.BuktiMasuk`]="{ item }">
-          <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)">
-            Lihat Bukti
-          </v-btn>
-        </template>
-        <template v-slot:[`item.BuktiKeluar`]="{item}">
-          <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
-            Lihat Bukti
-          </v-btn>
-        </template>
-        <template v-slot:[`item.BuktiAkses1`]="{item}">
-          <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)">
-            Lihat Bukti
-          </v-btn>
-        </template>
-      </v-data-table>
-      <v-dialog v-model="dialogVisible" persistent width="auto">
-        <v-img :src="popupLink" width="100%"></v-img>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="closeDialog">Tutup</v-btn>
-        </v-card-actions>
-      </v-dialog>
+          <template v-slot:[`item.BuktiMasuk`]="{ item }">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)">
+              Lihat Bukti
+            </v-btn>
+          </template>
+          <template v-slot:[`item.BuktiKeluar`]="{item}">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
+              Lihat Bukti
+            </v-btn>
+          </template>
+          <template v-slot:[`item.BuktiAkses1`]="{item}">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)">
+              Lihat Bukti
+            </v-btn>
+          </template>
+        </v-data-table>
+        <v-dialog v-model="dialogVisible" persistent width="auto">
+          <v-img :src="popupLink" width="100%"></v-img>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="closeDialog">Tutup</v-btn>
+          </v-card-actions>
+        </v-dialog>
       </v-tab-item>
     </v-tabs-items>
     </v-card>
@@ -101,15 +119,17 @@ export default {
             { text: 'Bukti Masuk', value: 'BuktiMasuk', sortable: false, },
             { text: 'Waktu Keluar', value: 'WaktuKeluar' },
             { text: 'Bukti Keluar', value: 'BuktiKeluar', sortable: false, },
-            { text: 'Status', value: 'Status', sortable: false },
+            { text: 'Status', value: 'Status'},
             { text: 'Keterangan', value: 'Keterangan', sortable: false },
             ],
             data: [],
             selectedFilter: null,
             filterOptions: ['0', '1', '2'],
+            timeFilterOptions: ['All', 'Today', 'Yesterday'],
             filteredData:[],
             sortBy: 'WaktuMasuk',
             sortAsc: false,
+            selectedTimeFilter: null,
           },
           {
             title: 'Riwayat Akses', 
@@ -149,7 +169,7 @@ export default {
     methods: {
       async getDataRiwayat() {
         try {
-          const response1 = await axios.get('http://localhost:8099/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response1 = await axios.get('http://localhost:8080/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list = response1.data
           const mappedRiwayat = list.map((item) => ({
             BuktiKeluar: item[2],
@@ -162,9 +182,10 @@ export default {
             Keterangan: item[7]
           }));
           this.tabs[0].data = mappedRiwayat
+          this.tabs[0].filteredData = this.filterDataBySelectedTime(mappedRiwayat);
           this.tabs[0].sortDesc = false
 
-          const response2 = await axios.get('http://localhost:8099/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response2 = await axios.get('http://localhost:8080/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list1 = response2.data
           const mappedRiwayatAkses = list1.map((item) => ({
             BuktiAkses1: item[1],
@@ -210,21 +231,48 @@ export default {
           return this.filteredData2;
         }
         return [];
-      }
+      },
+
+      filterDataByToday(data) {
+        const today = new Date().toISOString().split('T')[0]; // Mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+        return data.filter(item => {
+          const date = item.WaktuMasuk.split(' ')[0]; // Mendapatkan tanggal dari kolom WaktuMasuk dalam format YYYY-MM-DD
+          return date === today; // Filter data berdasarkan hari ini
+        });
+      },
+      filterDataByYesterday(data) {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const yesterdayString = yesterday.toISOString().split('T')[0]; // Mendapatkan tanggal kemarin dalam format YYYY-MM-DD
+        return data.filter(item => {
+          const date = item.WaktuMasuk.split(' ')[0]; // Mendapatkan tanggal dari kolom WaktuMasuk dalam format YYYY-MM-DD
+          return date === yesterdayString; // Filter data berdasarkan kemarin
+        });
+      },
+      filterDataBySelectedTime(data) {
+        if (this.selectedTimeFilter === 'Today') {
+          return this.filterDataByToday(data); // Filter data berdasarkan hari ini
+        } else if (this.selectedTimeFilter === 'Yesterday') {
+          return this.filterDataByYesterday(data); // Filter data berdasarkan kemarin
+        } else {
+          return data; // Tampilkan semua data jika tidak ada filter waktu yang dipilih
+        }
+      },
     },
 
     computed: {
       filteredData1() {
-        if (!this.tabs[0].selectedFilter) {
-          return this.tabs[0].data;
+        if (!this.tabs[0].selectedFilter && !this.selectedTimeFilterg) {
+          return this.tabs[0].filteredData;
         }
 
         const searchKeyword = parseInt(this.tabs[0].selectedFilter);
 
-        return this.tabs[0].data.filter(item => {
+        return this.tabs[0].filteredData.filter(item => {
           const status = item.Status;
 
-          return status === searchKeyword;
+          return (!searchKeyword || status === searchKeyword) && (!this.selectedTimeFilter || this.filterDataBySelectedTime([item]).length > 0);
         });
      },
 

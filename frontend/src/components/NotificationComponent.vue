@@ -53,7 +53,7 @@ export default {
     async postDataIzinkan() {
       await axios({
         method: 'post',
-        url: 'http://localhost:8099/update_mhs_izinkan_keluar',
+        url: 'http://localhost:8080/update_mhs_izinkan_keluar',
         data: {
           mhs_id: this.notification.IDMahasiswa,
           bukti_akses_gagal: this.notification.BuktiAkses
@@ -70,7 +70,7 @@ export default {
     async postDataTolak() {
       await axios({
         method: 'post',
-        url: 'http://localhost:8099/update_mhs_izinkan_keluar',
+        url: 'http://localhost:8080/update_mhs_izinkan_keluar',
         data: {
           mhs_id: this.notification.IDMahasiswa,
         }
