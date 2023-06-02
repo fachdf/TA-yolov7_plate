@@ -6,9 +6,22 @@
       <!-- <p>ID Mahasiswa: {{ notification.IDMahasiswa}}</p> -->
       <p>RFID: {{ notification.RFID }}</p>
       <P>Waktu Akses: {{ notification.WaktuAkses }}</P> 
+      <p>
+        Bukti Akses: 
+        <v-btn color="primary" rounded @click="openDialog(notification.BuktiAkses)">
+          Lihat Bukti
+        </v-btn>
+      </p>
       <p>Keterangan: {{ notification.Keterangan }}</p>
     </v-card-text>
     <v-card-actions>
+      <v-dialog v-model="dialogVisible" persistent width="auto">
+        <v-img :src="popupLink" width="100%"></v-img>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="closeDialog">Tutup</v-btn>
+        </v-card-actions>
+      </v-dialog>
       <v-btn color="success" class="ma-2 mt-4 white--text" @click="postDataIzinkan" large>
         <v-icon right dark class="mr-2">
           mdi-check
@@ -40,7 +53,7 @@ export default {
     async postDataIzinkan() {
       await axios({
         method: 'post',
-        url: 'http://192.168.34.201:8090/update_mhs_izinkan_keluar',
+        url: 'http://localhost:8099/update_mhs_izinkan_keluar',
         data: {
           mhs_id: this.notification.IDMahasiswa,
           bukti_akses_gagal: this.notification.BuktiAkses
@@ -57,7 +70,7 @@ export default {
     async postDataTolak() {
       await axios({
         method: 'post',
-        url: 'http://192.168.34.201:8090/update_mhs_izinkan_keluar',
+        url: 'http://localhost:8099/update_mhs_izinkan_keluar',
         data: {
           mhs_id: this.notification.IDMahasiswa,
         }
@@ -68,6 +81,15 @@ export default {
       .catch(error => {
         console.log(error.request.response)
       })
+    },
+
+    openDialog(item) {
+      this.popupLink = item;
+      this.dialogVisible = true;
+    },
+    closeDialog() {
+      this.dialogVisible = false;
+      this.popupLink = '';
     },
   }
   
