@@ -33,15 +33,15 @@
         md="6"
         mr=auto 
         >
-          <v-text-field
+          <v-select
           max-width="344"
           class="left-input pt-4 pl-4 pr-4 mx-auto"
-          v-model="tab.search"
-          append-icon="mdi-magnify"
+          v-model="tab.selectedFilter"
+          :items="tab.filteredOptions"
           label="Filter Status"
           outlined
           dense
-          ></v-text-field>
+          ></v-select>
         </v-col>
         
         <v-data-table 
@@ -105,7 +105,8 @@ export default {
             { text: 'Keterangan', value: 'Keterangan', sortable: false },
             ],
             data: [],
-            search: '',
+            selectedFilter: null,
+            filterOptions: ['0', '1', '2'],
             filteredData:[],
             sortBy: 'WaktuMasuk',
             sortAsc: false,
@@ -126,7 +127,8 @@ export default {
             { text: 'Keterangan', value: 'Keterangan1', sortable: false, },
             ],
             data: [],
-            search:'',
+            selectedFilter: null,
+            filterOptions: ['3'],
             filteredData:[],
             sortBy: 'WaktuAkses1',
             sortAsc: false,
@@ -141,13 +143,13 @@ export default {
 
     mounted() {
       this.getDataRiwayat();
-      setInterval(this.getDataRiwayat,3000);
+      //setInterval(this.getDataRiwayat,3000);
     },
 
     methods: {
       async getDataRiwayat() {
         try {
-          const response1 = await axios.get('http://192.168.34.201:8090/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response1 = await axios.get('http://localhost:8099/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list = response1.data
           const mappedRiwayat = list.map((item) => ({
             BuktiKeluar: item[2],
@@ -162,11 +164,11 @@ export default {
           this.tabs[0].data = mappedRiwayat
           this.tabs[0].sortDesc = false
 
-          const response2 = await axios.get('http://192.168.34.201:8090/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response2 = await axios.get('http://localhost:8099/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list1 = response2.data
           const mappedRiwayatAkses = list1.map((item) => ({
-            BuktiAkses1: item[0],
-            WaktuAkses1: item[1],
+            BuktiAkses1: item[1],
+            WaktuAkses1: item[0],
             PelatNomor1: item[2],
             RFID1: item[3],
             Status1: item[4],
@@ -213,30 +215,30 @@ export default {
 
     computed: {
       filteredData1() {
-        if (!this.tabs[0].search) {
+        if (!this.tabs[0].selectedFilter) {
           return this.tabs[0].data;
         }
 
-        const searchKeyword = parseInt(this.tabs[0].search);
+        const searchKeyword = parseInt(this.tabs[0].selectedFilter);
 
         return this.tabs[0].data.filter(item => {
           const status = item.Status;
 
-          return status == searchKeyword;
+          return status === searchKeyword;
         });
      },
 
       filteredData2() {
-        if (!this.tabs[1].search) {
+        if (!this.tabs[1].selectedFilter) {
           return this.tabs[1].data;
         }
 
-        const searchKeyword = parseInt(this.tabs[1].search);
+        const searchKeyword = parseInt(this.tabs[1].selectedFilter);
 
         return this.tabs[1].data.filter(item => {
           const status = item.Status1;
 
-          return status == searchKeyword;
+          return status === searchKeyword;
         });
       }
     }

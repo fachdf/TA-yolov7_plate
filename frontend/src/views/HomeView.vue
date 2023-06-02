@@ -111,26 +111,28 @@ import NotificationCard from '@/components/NotificationComponent.vue';
         alertMessage: 'RFID dan Pelat Nomor tidak cocok di Gate Keluar, Mohon untuk ditindaklanjuti.',
         message: 'Hello, world!',
         icon: 'mdi-alert',
-        notifications: []
+        notifications: [],
+        dialogVisible: false,
+        popupLink: '',
       }
     },
 
     mounted() {
       this.getDataJumlahMasuk();
-      setInterval(this.getDataJumlahMasuk, 3000);
+      //setInterval(this.getDataJumlahMasuk, 3000);
       this.getDataJumlahKeluar();
-      setInterval(this.getDataJumlahKeluar, 3000);
+      //setInterval(this.getDataJumlahKeluar, 3000);
       this.getDataJumlahPeringatan();
-      setInterval(this.getDataJumlahPeringatan, 3000);
+      //setInterval(this.getDataJumlahPeringatan, 3000);
       this.getNotification();
-      setInterval(this.getNotification, 3000);
+      //setInterval(this.getNotification, 3000);
       setInterval(this.getCurrentDate, 1000);
     },
 
     methods: {
       async getDataJumlahMasuk() {
         try {
-          const response = await axios.get('http://192.168.34.201:8090/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8099/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           this.totalMasuk= response.data.data; // Simpan respons API ke variabel 
           console.log(this.totalMasuk)
         } catch (error) {
@@ -140,7 +142,7 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
       async getDataJumlahKeluar() {
           try {
-            const response = await axios.get('http://192.168.34.201:8090/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8099/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalKeluar= response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -149,7 +151,7 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
         async getDataJumlahPeringatan() {
           try {
-            const response = await axios.get('http://192.168.34.201:8090/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8099/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalPeringatan = response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -158,12 +160,12 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
         async getNotification() {
         try {
-          const response = await axios.get('http://192.168.34.201:8090/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8099/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           // this.items = response.data;
           const list = response.data
           const mappedRiwayatAkses = list.map((item) => ({
-            BuktiAkses: item[0],
-            WaktuAkses: item[1],
+            BuktiAkses: item[1],
+            WaktuAkses: item[0],
             PelatNomor: item[2],
             RFID: item[3],
             Status: item[4],
