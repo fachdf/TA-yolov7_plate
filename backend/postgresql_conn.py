@@ -8,8 +8,8 @@ def add_gate(type, status):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -40,8 +40,8 @@ def update_gate_status(id, status):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -73,8 +73,8 @@ def add_mhs_masuk(rfid, pelat, status):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -118,8 +118,8 @@ def update_mhs_keluar(rfid, status):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -160,8 +160,8 @@ def get_mhs_data_by_rfid(rfid):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -196,8 +196,8 @@ def get_mhs_data_by_pelat(pelat):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -232,8 +232,8 @@ def get_mhs_data_by_id(id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -265,8 +265,8 @@ def get_mhs_data_by_pelat(pelat):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -304,8 +304,8 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -339,8 +339,8 @@ def add_riwayat_masuk(id_mhs, keterangan):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -373,8 +373,8 @@ def add_riwayat_gagal(id_mhs, keterangan):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -407,8 +407,8 @@ def update_riwayat_gagal(id_mhs, keterangan):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -442,8 +442,8 @@ def update_bukti_masuk(bukti_masuk, user_id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -474,8 +474,8 @@ def update_bukti_gagal(bukti_gagal, user_id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -507,8 +507,8 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -542,8 +542,8 @@ def update_riwayat_keluar(user_id, keterangan):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -577,8 +577,8 @@ def update_bukti_keluar(bukti_keluar, user_id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -609,8 +609,8 @@ def update_izinkan_keluar(bukti_keluar, user_id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -642,8 +642,8 @@ def update_tolak_keluar(user_id):
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -675,8 +675,8 @@ def get_all_riwayat_parkir():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -707,8 +707,8 @@ def get_all_riwayat_gagal():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -739,8 +739,8 @@ def get_all_peringatan_gagal():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -771,8 +771,8 @@ def get_jml_parkir():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -804,8 +804,8 @@ def get_jml_keluar_parkir():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -838,8 +838,8 @@ def get_jml_problem_parkir():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -872,8 +872,8 @@ def get_jml_parkir():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -905,8 +905,8 @@ def get_test():
         conn = psycopg2.connect(
             host="localhost",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
