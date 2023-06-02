@@ -10,7 +10,7 @@ def identifikasi_plat_nomor(photo):
     try:
 
         opt = argparse.Namespace()
-        opt.detect_model = 'weights/yolov7-lite-s.pt'
+        opt.detect_model = 'weights/best_v2.pt'
         opt.rec_model = 'weights/plate_rec.pth'
         opt.source = photo
         opt.img_size = 640

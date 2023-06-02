@@ -1,15 +1,22 @@
 import psycopg2
 from datetime import datetime
-
+from sshtunnel import SSHTunnelForwarder
 
 def add_gate(type, status):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -36,11 +43,18 @@ def add_gate(type, status):
 def update_gate_status(id, status):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -68,11 +82,18 @@ def update_gate_status(id, status):
 def add_mhs_masuk(rfid, pelat, status):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -112,11 +133,18 @@ def add_mhs_masuk(rfid, pelat, status):
 def update_mhs_keluar(rfid, status):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -153,11 +181,18 @@ def update_mhs_keluar(rfid, status):
 def get_mhs_data_by_rfid(rfid):
     try:
         # establish a connection to the database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
 
         # create a cursor object
@@ -188,11 +223,18 @@ def get_mhs_data_by_rfid(rfid):
 def get_mhs_data_by_pelat(pelat):
     try:
         # establish a connection to the database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
 
         # create a cursor object
@@ -223,11 +265,18 @@ def get_mhs_data_by_pelat(pelat):
 def get_mhs_data_by_id(id):
     try:
         # establish a connection to the database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
 
         # create a cursor object
@@ -255,11 +304,18 @@ def get_mhs_data_by_id(id):
 def get_mhs_data_by_pelat(pelat):
     try:
         # establish a connection to the database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
 
         # create a cursor object
@@ -293,11 +349,18 @@ def get_mhs_data_by_pelat(pelat):
 def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -327,11 +390,18 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
 def add_riwayat_masuk(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -360,11 +430,18 @@ def add_riwayat_masuk(id_mhs, keterangan):
 def add_riwayat_gagal(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -393,11 +470,18 @@ def add_riwayat_gagal(id_mhs, keterangan):
 def update_riwayat_gagal(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -427,11 +511,18 @@ def update_riwayat_gagal(id_mhs, keterangan):
 def update_bukti_masuk(bukti_masuk, user_id):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -458,11 +549,18 @@ def update_bukti_masuk(bukti_masuk, user_id):
 def update_bukti_gagal(bukti_gagal, user_id):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -490,11 +588,18 @@ def update_bukti_gagal(bukti_gagal, user_id):
 def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -524,11 +629,18 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
 def update_riwayat_keluar(user_id, keterangan):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -558,11 +670,18 @@ def update_riwayat_keluar(user_id, keterangan):
 def update_bukti_keluar(bukti_keluar, user_id):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -589,11 +708,18 @@ def update_bukti_keluar(bukti_keluar, user_id):
 def update_izinkan_keluar(bukti_keluar, user_id):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -621,11 +747,18 @@ def update_izinkan_keluar(bukti_keluar, user_id):
 def update_tolak_keluar(user_id):
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -653,11 +786,18 @@ def update_tolak_keluar(user_id):
 def get_all_riwayat_parkir():
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -684,11 +824,18 @@ def get_all_riwayat_parkir():
 def get_all_riwayat_gagal():
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -715,11 +862,18 @@ def get_all_riwayat_gagal():
 def get_all_peringatan_gagal():
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -746,11 +900,18 @@ def get_all_peringatan_gagal():
 def get_jml_parkir():
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -778,11 +939,18 @@ def get_jml_parkir():
 def get_jml_keluar_parkir():
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -811,11 +979,18 @@ def get_jml_keluar_parkir():
 def get_jml_problem_parkir():
     try:
         # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
         conn = psycopg2.connect(
-            host="localhost",
+            host= server.local_bind_host,
+            port= server.local_bind_port,
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="White!23"
         )
         
         # Create a cursor object
@@ -825,6 +1000,85 @@ def get_jml_problem_parkir():
 
         # Execute the SQL query to insert the text into the database
         cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status = 2")
+
+        
+        result = cur.fetchone()[0]
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return result
+    
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
+def get_jml_parkir():
+    try:
+        # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
+        conn = psycopg2.connect(
+            host= server.local_bind_host,
+            port= server.local_bind_port,
+            database="gateparking",
+            user="pari",
+            password="White!23"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+        
+        now = datetime.now() # Create timestamp
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("SELECT COUNT(*) FROM riwayat_parkir")
+
+        
+        result = cur.fetchone()[0]
+        
+        # Close the cursor and connection objects
+        cur.close()
+        conn.close()
+        
+        # Return a success message
+        return result
+    except (Exception, psycopg2.DatabaseError) as error:
+        # If an error occurs, rollback the transaction and return an error message
+        conn.rollback()
+        return f"Error while saving new riwayat to database: {error}"
+
+def get_test():
+    try:
+        # Connect to the PostgreSQL database
+        server = SSHTunnelForwarder(('103.13.206.134', 22),
+         ssh_username='pari',
+         ssh_password='White!23',
+         remote_bind_address=('localhost', 5432),
+         local_bind_address=('localhost', 5433))
+        server.start()
+        conn = psycopg2.connect(
+            host= server.local_bind_host,
+            port= server.local_bind_port,
+            database="gateparking",
+            user="pari",
+            password="White!23"
+        )
+        
+        # Create a cursor object
+        cur = conn.cursor()
+        
+        now = datetime.now() # Create timestamp
+
+        # Execute the SQL query to insert the text into the database
+        cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status = 1")
 
         
         result = cur.fetchone()[0]
@@ -852,7 +1106,7 @@ if __name__ == '__main__':
     #res = update_bukti_keluar("https://res.cloudinary.com/jtk/image/upload/v1684497128/gwqd188isqicobc4yqc5.jpg", 52)
     #res = get_jml_problem_parkir()
     #res = add_mhs_masuk("test1", "test2", 0)
-    #res = get_all_peringatan_gagal()
-    res = get_all_riwayat_parkir()
+    res = get_all_peringatan_gagal()
+    #res = get_test()
     #res = update_izinkan_keluar("test/test.jpg", 34)
     print(res)

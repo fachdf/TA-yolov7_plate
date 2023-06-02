@@ -16,3 +16,6 @@ backend/data/dataset_fix/*
 backend/data/dataset_fix/images/
 *.jpg
 !*.mp3
+*.jpg
+*.png
+*.jpg
