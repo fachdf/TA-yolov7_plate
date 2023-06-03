@@ -48,7 +48,8 @@ def identifikasi_masuk():
     mhs =  get_mhs_data_by_rfid(rfid)
     # Identifikasi Pelat Nomor
     pelat = identifikasi_plat_nomor(bukti_masuk)  
-
+    print("pelat")
+    print(pelat)
     if mhs == None: # Jika RFID blm terdaftar
         if pelat != None: # Jika Pelat nomor terdeteksi
             is_pelat = get_mhs_data_by_pelat(pelat)
@@ -110,6 +111,8 @@ def identifikasi_keluar():
     bukti_keluar = "data_riwayat/image_" + filename + ".jpg"
     mhs =  get_mhs_data_by_rfid(rfid)
     pelat = identifikasi_plat_nomor(bukti_keluar)
+    print("pelat")
+    print(pelat)
     if mhs != None: # Jika ada mhs di database dengan RFID tsb
         print("###############DATA MAHASISWA##################")
         print(mhs)

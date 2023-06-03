@@ -10,15 +10,20 @@ def identifikasi_plat_nomor(photo):
     try:
 
         opt = argparse.Namespace()
-        opt.detect_model = 'weights/best_v2.pt'
+        opt.detect_model = 'weights/last_v2.pt'
         opt.rec_model = 'weights/plate_rec.pth'
         opt.source = photo
         opt.img_size = 640
         opt.output = 'result'
         opt.kpt_label = 4
         plat_nomor = main(opt)
+        print("plat nomor type data:")
+        print(type(plat_nomor))
         if plat_nomor:
-            return plat_nomor
+            if(type(plat_nomor) == str):
+                return plat_nomor
+            elif(type(plat_nomor) == list):
+                return plat_nomor[0]['plate_no']
         else:
             return None
     except (Exception) as error:

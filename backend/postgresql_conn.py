@@ -222,7 +222,6 @@ def get_mhs_data_by_rfid(rfid):
     finally:
         # close the cursor and connection objects
         cur.close()
-        cur.close()
         conn.close()
 
 def get_mhs_data_by_pelat(pelat):
@@ -877,7 +876,8 @@ def get_all_riwayat_gagal():
     
     except (Exception, psycopg2.DatabaseError) as error:
         # If an error occurs, rollback the transaction and return an error message
-        conn.rollback()
+        if conn:
+         conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
 
 def get_all_peringatan_gagal():
@@ -901,7 +901,7 @@ def get_all_peringatan_gagal():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, rp.waktu_masuk, rp.bukti_masuk, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
         
         # Commit the transaction
         rows = cur.fetchall()
