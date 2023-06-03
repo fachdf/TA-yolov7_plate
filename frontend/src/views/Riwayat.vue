@@ -53,7 +53,7 @@
         >
           <v-select
           max-width="344"
-          class="left-input pt-4 pr-4 mx-auto"
+          class="pt-4 pr-4 mx-auto"
           v-model="selectedTimeFilter"
           :items="tab.timeFilterOptions"
           label="Filter Waktu Masuk"
@@ -149,9 +149,11 @@ export default {
             data: [],
             selectedFilter: null,
             filterOptions: ['3'],
+            timeFilterOptions: ['All', 'Today', 'Yesterday'],
             filteredData:[],
             sortBy: 'WaktuAkses1',
             sortAsc: false,
+            selectedTimeFilter: null,
           }
         ],
         dialogVisible: false,
@@ -263,7 +265,7 @@ export default {
 
     computed: {
       filteredData1() {
-        if (!this.tabs[0].selectedFilter && !this.selectedTimeFilterg) {
+        if (!this.tabs[0].selectedFilter && !this.selectedTimeFilter) {
           return this.tabs[0].filteredData;
         }
 
