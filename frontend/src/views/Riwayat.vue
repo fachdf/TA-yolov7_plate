@@ -169,7 +169,7 @@ export default {
     methods: {
       async getDataRiwayat() {
         try {
-          const response1 = await axios.get('http://localhost:8080/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response1 = await axios.get('http://localhost:8099/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list = response1.data
           const mappedRiwayat = list.map((item) => ({
             BuktiKeluar: item[2],
@@ -185,7 +185,7 @@ export default {
           this.tabs[0].filteredData = this.filterDataBySelectedTime(mappedRiwayat);
           this.tabs[0].sortDesc = false
 
-          const response2 = await axios.get('http://localhost:8080/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response2 = await axios.get('http://localhost:8099/get_riwayat_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list1 = response2.data
           const mappedRiwayatAkses = list1.map((item) => ({
             BuktiAkses1: item[1],
