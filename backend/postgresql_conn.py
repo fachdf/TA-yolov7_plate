@@ -158,9 +158,9 @@ def update_mhs_keluar(rfid, status):
         
         #new_id = cur.fetchone()[0]
         #print(new_id)
-        sql = "UPDATE mahasiswa SET user_status = %s WHERE user_rfid = %s AND user_status = %s RETURNING user_id"
+        sql = "UPDATE mahasiswa SET user_status = %s WHERE user_rfid = %s AND user_status IN (%s,%s) RETURNING user_id"
         print(sql)
-        data = (status, rfid, 0)
+        data = (status, rfid, 0,2)
         cur.execute(sql, data)
         userid = cur.fetchone()[0]
         # Commit the transaction
@@ -203,7 +203,7 @@ def get_mhs_data_by_rfid(rfid):
         cur = conn.cursor()
         
         # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
-        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_rfid = %s AND user_status = %s", (rfid, 0))
+        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_rfid = %s AND user_status IN (%s, %s)", (rfid, 0,2))
         
         # fetch all the rows from the result set
         rows = cur.fetchall()
@@ -1122,6 +1122,15 @@ def get_test():
         # If an error occurs, rollback the transaction and return an error message
         conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
+def jaccard_similarity(str1, str2):
+    length = max(len(str1), len(str2))
+    print(length)
+    diff_count = sum(c1 != c2 for c1, c2 in zip(str1, str2))
+    print(diff_count)
+    similarity_percentage = ((length - diff_count) / length) * 100
+    return similarity_percentage
+
+
 
 if __name__ == '__main__':
     #res = add_mhs(12345678901, "D 6280 SAG")]
@@ -1130,13 +1139,13 @@ if __name__ == '__main__':
     # rfid = "12345678903"
     # res = get_mhs_data_by_rfid(rfid, "D6280SAG")
     #res = get_jml_parkir()
-    #mhs =  get_mhs_data_by_rfid("12345678906")
+    #res =  get_mhs_data_by_rfid("2454076420")
     #res = update_bukti_keluar("https://res.cloudinary.com/jtk/image/upload/v1684497128/gwqd188isqicobc4yqc5.jpg", 52)
     #res = get_jml_problem_parkir()
     #res = add_mhs_masuk("test1", "test2", 0)
     #res = get_all_peringatan_gagal()
-    res = get_jml_parkir()
-    res2 = get_jml_keluar_parkir()
+    res = jaccard_similarity('AAAAAAAAAA', 'AAAAAAAAAB')
+    #res2 = get_jml_keluar_parkir()
     #res = update_izinkan_keluar("test/test.jpg", 34)
     print(res)
-    print(res2)
+    #print(res2)

@@ -26,6 +26,13 @@ cors = CORS(app, resource={
 #   api_secret = "608g68rUKA13x6RFA3r5zfqVv5k"
 # )
 
+def jaccard_similarity(str1, str2):
+    length = max(len(str1), len(str2))
+    print(length)
+    diff_count = sum(c1 != c2 for c1, c2 in zip(str1, str2))
+    print(diff_count)
+    similarity_percentage = ((length - diff_count) / length) * 100
+    return similarity_percentage
 
 @app.route('/identifikasi_masuk', methods=['POST'])
 #
@@ -118,7 +125,7 @@ def identifikasi_keluar():
         print(mhs)
         pelat_nomor_terdaftar = mhs[0][2]
         if pelat != None: # Kalo plat terdeteksi
-            if pelat_nomor_terdaftar == pelat: # Jika pelat nomor sama dengan mhs terdaftar dengan RFID input
+            if (jaccard_similarity(pelat_nomor_terdaftar,pelat) >= 80): # Jika pelat nomor sama dengan mhs terdaftar dengan RFID input
                 status = 1
                 id_mhs = update_mhs_keluar(rfid, status)
                 code = 200
@@ -150,7 +157,7 @@ def identifikasi_keluar():
                 keterangan = "Pelat Kendaraan Terdaftar namun RFID berbeda"
                 #result = update_riwayat_keluar_with_bukti(bukti_keluar, id_mhs)
                 print(id_mhs)
-                result = add_riwayat_gagal(id_mhs, keterangan)
+                result = update_riwayat_gagal(id_mhs, keterangan)
             else: # Kalo pelat beda & RFID beda
                 status = 3
                 id_mhs = update_mhs_keluar(rfid, status)
@@ -160,7 +167,7 @@ def identifikasi_keluar():
                 
         else : # Pelat tidak terdeteksi = ULANG
             #os.remove(bukti_keluar)
-            result = "Error pelat tidak terdeteksi"
+            keterangan = "Error pelat tidak terdeteksi"
             code = 501
             id_mhs = None
 
