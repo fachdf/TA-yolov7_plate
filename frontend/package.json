@@ -17,6 +17,7 @@
     "pg": "^8.11.0",
     "vue": "^2.7.14",
     "vue-axios": "^3.5.2",
+    "vue-moment-tz": "^2.1.1",
     "vue-router": "^3.5.1",
     "vuetify": "^2.6.15",
     "webpack-dev-server": "^4.15.0"

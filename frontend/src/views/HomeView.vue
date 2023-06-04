@@ -94,9 +94,9 @@
 
 <script>
 import axios from 'axios'
+import NotificationCard from '@/components/NotificationComponent.vue';
 import moment from 'moment';
 import 'moment-timezone';
-import NotificationCard from '@/components/NotificationComponent.vue';
 
   export default{
     components: {
@@ -121,20 +121,20 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
     mounted() {
       this.getDataJumlahMasuk();
-      setInterval(this.getDataJumlahMasuk, 3000);
+      //setInterval(this.getDataJumlahMasuk, 3000);
       this.getDataJumlahKeluar();
-      setInterval(this.getDataJumlahKeluar, 3000);
+      //setInterval(this.getDataJumlahKeluar, 3000);
       this.getDataJumlahPeringatan();
-      setInterval(this.getDataJumlahPeringatan, 3000);
+      //setInterval(this.getDataJumlahPeringatan, 3000);
       this.getNotification();
-      setInterval(this.getNotification, 3000);
+      //setInterval(this.getNotification, 3000);
       setInterval(this.getCurrentDate, 1000);
     },
 
     methods: {
       async getDataJumlahMasuk() {
         try {
-          const response = await axios.get('http://localhost:8099/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8080/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           this.totalMasuk= response.data.data; // Simpan respons API ke variabel 
           console.log(this.totalMasuk)
         } catch (error) {
@@ -144,7 +144,7 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
       async getDataJumlahKeluar() {
           try {
-            const response = await axios.get('http://localhost:8099/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8080/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalKeluar= response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -153,7 +153,7 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
         async getDataJumlahPeringatan() {
           try {
-            const response = await axios.get('http://localhost:8099/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8080/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalPeringatan = response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -162,18 +162,17 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
         async getNotification() {
         try {
-          const response = await axios.get('http://localhost:8099/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8080/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           // this.items = response.data;
           const list = response.data
           const mappedRiwayatAkses = list.map((item) => ({
             BuktiAkses: item[1],
             WaktuAkses: moment(item[0]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
-            BuktiMasuk: item[3],
-            PelatNomor: item[4],
-            RFID: item[5],
-            Status: item[6],
-            Keterangan: item[7],
-            IDMahasiswa: item[8]
+            PelatNomor: item[2],
+            RFID: item[3],
+            Status: item[4],
+            Keterangan: item[5],
+            IDMahasiswa: item[6]
           }));
           this.notifications = mappedRiwayatAkses
           console.log(response)
