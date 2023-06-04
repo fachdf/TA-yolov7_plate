@@ -313,7 +313,7 @@ export default {
         return this.tabs[0].filteredData.filter(item => {
           console.log(this.tabs[0].selectedTimeFilter)
           //const status = item.Status;
-           return (searchKeyword == item.Status) && (!this.tabs[0].selectedTimeFilter || this.filterDataBySelectedTime(item).length > 0);
+           return (searchKeyword == item.Status) && (this.filterDataBySelectedTime(item.WaktuMasuk));
           //return (!searchKeyword || status == searchKeyword);
         });
      },
