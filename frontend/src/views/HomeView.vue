@@ -94,6 +94,8 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment';
+import 'moment-timezone';
 import NotificationCard from '@/components/NotificationComponent.vue';
 
   export default{
@@ -119,13 +121,13 @@ import NotificationCard from '@/components/NotificationComponent.vue';
 
     mounted() {
       this.getDataJumlahMasuk();
-      //setInterval(this.getDataJumlahMasuk, 3000);
+      setInterval(this.getDataJumlahMasuk, 3000);
       this.getDataJumlahKeluar();
-      //setInterval(this.getDataJumlahKeluar, 3000);
+      setInterval(this.getDataJumlahKeluar, 3000);
       this.getDataJumlahPeringatan();
-      //setInterval(this.getDataJumlahPeringatan, 3000);
+      setInterval(this.getDataJumlahPeringatan, 3000);
       this.getNotification();
-      //setInterval(this.getNotification, 3000);
+      setInterval(this.getNotification, 3000);
       setInterval(this.getCurrentDate, 1000);
     },
 
@@ -165,12 +167,13 @@ import NotificationCard from '@/components/NotificationComponent.vue';
           const list = response.data
           const mappedRiwayatAkses = list.map((item) => ({
             BuktiAkses: item[1],
-            WaktuAkses: item[0],
-            PelatNomor: item[2],
-            RFID: item[3],
-            Status: item[4],
-            Keterangan: item[5],
-            IDMahasiswa: item[6]
+            WaktuAkses: moment(item[0]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
+            BuktiMasuk: item[3],
+            PelatNomor: item[4],
+            RFID: item[5],
+            Status: item[6],
+            Keterangan: item[7],
+            IDMahasiswa: item[8]
           }));
           this.notifications = mappedRiwayatAkses
           console.log(response)

@@ -7,9 +7,15 @@
       <p>RFID: {{ notification.RFID }}</p>
       <P>Waktu Akses: {{ notification.WaktuAkses }}</P> 
       <p>
-        Bukti Akses: 
+        Bukti Akses Gagal: 
         <v-btn color="primary" rounded @click="openDialog(notification.BuktiAkses)">
-          Lihat Bukti
+          Lihat Gambar
+        </v-btn>
+      </p>
+      <p>
+        Bukti Akses Masuk: 
+        <v-btn color="primary" rounded @click="openDialog(notification.BuktiMasuk)">
+          Lihat Gambar
         </v-btn>
       </p>
       <p>Keterangan: {{ notification.Keterangan }}</p>
@@ -24,14 +30,9 @@
       </v-dialog>
       <v-dialog v-model="showKeteranganDialog" max-width="500px">
       <v-card>
-        <v-card-title>Keterangan Tolak</v-card-title>
+        <v-card-title>Keterangan</v-card-title>
         <v-card-text>
-          <v-textarea
-            v-model="keteranganTolak"
-            label="Keterangan"
-            outlined
-            auto-grow
-          ></v-textarea>
+          {{this.keterangan}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -57,7 +58,9 @@
 </template>
   
 <script>
+
 import axios from 'axios';
+
 
 export default {
   data() {
@@ -65,6 +68,7 @@ export default {
       showKeteranganDialog: false,
       dialogVisible: false,
       popupLink: '',
+      keterangan :''
     }
   },
   props: {
@@ -89,18 +93,15 @@ export default {
       .catch(error => {
         console.log(error.request.response)
       })
+      
+      this.openKeteranganDialog("Mahasiswa diizinkan untuk keluar.");
   },
 
     async postDataTolak() {
-      if (!this.keteranganTolak) {
-        this.openKeteranganDialog();
-        return; // Jika keterangan belum diisi, tampilkan pop-up keterangan dan hentikan proses pengiriman data
-      }
-
       try {
         await axios({
           method: 'post',
-          url: 'http://localhost:8099/update_mhs_izinkan_keluar',
+          url: 'http://localhost:8099/update_mhs_tolak_keluar',
           data: {
             mhs_id: this.notification.IDMahasiswa,
             keterangan_tolak: this.keteranganTolak, // Tambahkan keterangan tolak ke dalam data yang dikirim
@@ -110,6 +111,8 @@ export default {
       } catch (error) {
         console.log(error.request.response);
       }
+      
+      this.openKeteranganDialog("Mahasiswa ditolak untuk keluar.");
     },
 
     openDialog(item) {
@@ -122,7 +125,8 @@ export default {
       this.popupLink = '';
     },
 
-    openKeteranganDialog() {
+    openKeteranganDialog(ket) {
+      this.keterangan = ket
       this.showKeteranganDialog = true;
     },
     closeKeteranganDialog() {

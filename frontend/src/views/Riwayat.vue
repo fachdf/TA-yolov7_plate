@@ -71,17 +71,22 @@
         class="elevation-1 pl-4 pr-4">
           <template v-slot:[`item.BuktiMasuk`]="{ item }">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)">
-              Lihat Bukti
+              Lihat Gambar
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiKeluar`]="{item}">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
-              Lihat Bukti
+              Lihat Gambar
+            </v-btn>
+          </template>
+          <template v-slot:[`item.BuktiAkses`]="{item}">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
+              Lihat Gambar
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiAkses1`]="{item}">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)">
-              Lihat Bukti
+              Lihat Gambar
             </v-btn>
           </template>
         </v-data-table>
@@ -100,6 +105,8 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment';
+import 'moment-timezone';
 
 export default {
   name: 'riwayat-page',
@@ -119,12 +126,14 @@ export default {
             { text: 'Bukti Masuk', value: 'BuktiMasuk', sortable: false, },
             { text: 'Waktu Keluar', value: 'WaktuKeluar' },
             { text: 'Bukti Keluar', value: 'BuktiKeluar', sortable: false, },
+            { text: 'Waktu Akses Terakhir', value: 'WaktuAkses' },
+            { text: 'Bukti Akses Terakhir', value: 'BuktiAkses', sortable: false, },
             { text: 'Status', value: 'Status'},
             { text: 'Keterangan', value: 'Keterangan', sortable: false },
             ],
             data: [],
             selectedFilter: null,
-            filterOptions: ['0', '1', '2'],
+            filterOptions: ['Semua', 'Masih Didalam', 'Telah Keluar', 'Bermasalah'],
             timeFilterOptions: ['All', 'Today', 'Yesterday'],
             filteredData:[],
             sortBy: 'WaktuMasuk',
@@ -172,17 +181,37 @@ export default {
       async getDataRiwayat() {
         try {
           const response1 = await axios.get('http://localhost:8099/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
-          const list = response1.data
-          const mappedRiwayat = list.map((item) => ({
-            BuktiKeluar: item[2],
-            BuktiMasuk: item[0],
-            PelatNomor: item[4],
-            RFID: item[5],
-            Status: item[6],
-            WaktuKeluar: item[3],
-            WaktuMasuk: item[1],
-            Keterangan: item[7]
-          }));
+          const list = response1.data 
+          // const mappedRiwayat = list.map((item) => ({
+          //   BuktiKeluar: item[2],
+          //   BuktiMasuk: item[0],
+          //   PelatNomor: item[4],
+          //   RFID: item[5],
+          //   Status: item[6],
+          //   WaktuKeluar: moment(item[3]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') || "No Data",
+          //   WaktuMasuk: moment(item[1]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
+          //   Keterangan: item[7]
+          // }));
+          const mappedRiwayat = list.map((item) => {
+            const waktuKeluar = moment(item[3]);
+            const waktuMasuk = moment(item[1]);
+            const waktuAkses = moment(item[5]);
+
+            return {
+              BuktiMasuk: item[0],
+              WaktuMasuk: waktuMasuk.isValid() ? waktuMasuk.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
+              BuktiKeluar: item[2],
+              WaktuKeluar: waktuKeluar.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
+              BuktiAkses: item[4],
+              WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
+              
+              PelatNomor: item[6],
+              RFID: item[7],
+              Status: item[8],
+              Keterangan: item[9]
+            };
+          });
+         
           this.tabs[0].data = mappedRiwayat
           this.tabs[0].filteredData = this.filterDataBySelectedTime(mappedRiwayat);
           this.tabs[0].sortDesc = false
@@ -191,7 +220,7 @@ export default {
           const list1 = response2.data
           const mappedRiwayatAkses = list1.map((item) => ({
             BuktiAkses1: item[1],
-            WaktuAkses1: item[0],
+            WaktuAkses1: moment(item[0]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
             PelatNomor1: item[2],
             RFID1: item[3],
             Status1: item[4],
@@ -216,16 +245,6 @@ export default {
         this.popupLink = '';
       },
 
-      // fetchData() {
-      //   pool.query('SELECT * FROM your_table', (error, results) => {
-      //     if (error) {
-      //       console.error("Gagal mengambil data:", error);
-      //     } else {
-      //       this.data = results.rows;
-      //     }
-      //   });
-      // },
-
       getFilteredItems(index) {
         if (index === 0) {
           return this.filteredData1;
@@ -237,8 +256,13 @@ export default {
 
       filterDataByToday(data) {
         const today = new Date().toISOString().split('T')[0]; // Mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+        // console.log("data masuk")
+        // console.log(this.item.WaktuMasuk.split(' ')[0]);
         return data.filter(item => {
           const date = item.WaktuMasuk.split(' ')[0]; // Mendapatkan tanggal dari kolom WaktuMasuk dalam format YYYY-MM-DD
+          console.log("Datamasuk")
+          console.log(date)
+          console.log(today)
           return date === today; // Filter data berdasarkan hari ini
         });
       },
@@ -268,13 +292,27 @@ export default {
         if (!this.tabs[0].selectedFilter && !this.selectedTimeFilter) {
           return this.tabs[0].filteredData;
         }
-
-        const searchKeyword = parseInt(this.tabs[0].selectedFilter);
-
+        var searchKeyword = 0;
+        switch(this.tabs[0].selectedFilter){
+          case("Masih Didalam"):
+            searchKeyword = 0;
+            break;
+          case("Telah Keluar"):
+            searchKeyword = 1;
+            break;
+          case("Bermasalah"):
+            searchKeyword = 2;
+            break;
+          default:
+            return this.tabs[0].filteredData;
+        }
+        //const searchKeyword = parseInt(this.tabs[0].selectedFilter);
+        console.log(searchKeyword)
         return this.tabs[0].filteredData.filter(item => {
-          const status = item.Status;
-
-          return (!searchKeyword || status === searchKeyword) && (!this.selectedTimeFilter || this.filterDataBySelectedTime([item]).length > 0);
+          console.log(this.selectedTimeFilter)
+          //const status = item.Status;
+           return (searchKeyword == item.Status) && (!this.selectedTimeFilter || this.filterDataBySelectedTime(item).length > 0);
+          //return (!searchKeyword || status == searchKeyword);
         });
      },
 

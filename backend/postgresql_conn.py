@@ -737,13 +737,13 @@ def update_izinkan_keluar(bukti_keluar, user_id):
             user="pari",
             password="kota407"
         )
-        
+        keterangan = "Diizinkan keluar oleh Petugas"
         # Create a cursor object
         cur = conn.cursor()
 
         now = datetime.now() 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s WHERE user_user_id = %s", (now, bukti_keluar, user_id))
+        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s, keterangan = %s WHERE user_user_id = %s", (now, bukti_keluar, keterangan, user_id))
         cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (1, user_id))
         # Commit the transaction
         conn.commit()
@@ -777,14 +777,15 @@ def update_tolak_keluar(user_id):
             user="pari",
             password="kota407"
         )
-        
+        keterangan = "Tidak diizinkan untuk keluar oleh petugas"
         # Create a cursor object
         cur = conn.cursor()
 
         now = datetime.now() 
         # Execute the SQL query to insert the text into the database
         #cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s WHERE user_user_id = %s", (now, bukti_keluar, user_id))
-        cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (0, user_id))
+        #cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (2, user_id))
+        cur.execute("UPDATE riwayat_parkir SET keterangan = %s WHERE user_user_id = %s", (keterangan, user_id))
         # Commit the transaction
         conn.commit()
         
@@ -822,7 +823,7 @@ def get_all_riwayat_parkir():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status IN (0,1,2)")
+        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, rp.bukti_akses_gagal, rp.waktu_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status IN (0,1,2)")
         
         # Commit the transaction
         rows = cur.fetchall()
