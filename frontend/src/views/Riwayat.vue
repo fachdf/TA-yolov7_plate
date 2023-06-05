@@ -54,7 +54,7 @@
           <v-select
           max-width="344"
           class="pt-4 pr-4 mx-auto"
-          v-model="selectedTimeFilter"
+          v-model="tab.selectedTimeFilter"
           :items="tab.timeFilterOptions"
           label="Filter Waktu Masuk"
           outlined
@@ -71,22 +71,22 @@
         class="elevation-1 pl-4 pr-4">
           <template v-slot:[`item.BuktiMasuk`]="{ item }">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)">
-              Lihat Gambar
+              Lihat
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiKeluar`]="{item}">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
-              Lihat Gambar
+              Lihat
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiAkses`]="{item}">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
-              Lihat Gambar
+              Lihat
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiAkses1`]="{item}">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)">
-              Lihat Gambar
+              Lihat
             </v-btn>
           </template>
         </v-data-table>
@@ -180,7 +180,7 @@ export default {
     methods: {
       async getDataRiwayat() {
         try {
-          const response1 = await axios.get('http://localhost:8099/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response1 = await axios.get('http://localhost:8080/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list = response1.data 
           // const mappedRiwayat = list.map((item) => ({
           //   BuktiKeluar: item[2],
@@ -205,10 +205,10 @@ export default {
               BuktiAkses: item[4],
               WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
               
-              PelatNomor: item[6],
-              RFID: item[7],
-              Status: item[8],
-              Keterangan: item[9]
+              PelatNomor: item[8],
+              RFID: item[5],
+              Status: item[6],
+              Keterangan: item[7]
             };
           });
          
@@ -216,7 +216,7 @@ export default {
           this.tabs[0].filteredData = this.filterDataBySelectedTime(mappedRiwayat);
           this.tabs[0].sortDesc = false
 
-          const response2 = await axios.get('http://localhost:8099/get_riwayat_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response2 = await axios.get('http://localhost:8080/get_riwayat_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list1 = response2.data
           const mappedRiwayatAkses = list1.map((item) => ({
             BuktiAkses1: item[1],
@@ -266,6 +266,7 @@ export default {
           return date === today; // Filter data berdasarkan hari ini
         });
       },
+
       filterDataByYesterday(data) {
         const today = new Date();
         const yesterday = new Date(today);
@@ -276,6 +277,7 @@ export default {
           return date === yesterdayString; // Filter data berdasarkan kemarin
         });
       },
+      
       filterDataBySelectedTime(data) {
         if (this.selectedTimeFilter === 'Today') {
           return this.filterDataByToday(data); // Filter data berdasarkan hari ini
@@ -289,10 +291,10 @@ export default {
 
     computed: {
       filteredData1() {
-        if (!this.tabs[0].selectedFilter && !this.selectedTimeFilter) {
+        if (!this.tabs[0].selectedFilter && !this.tabs[0].selectedTimeFilter) {
           return this.tabs[0].filteredData;
         }
-        var searchKeyword = 0;
+        var searchKeyword = parseInt(this.tabs[0].selectedFilter);
         switch(this.tabs[0].selectedFilter){
           case("Masih Didalam"):
             searchKeyword = 0;
@@ -307,17 +309,17 @@ export default {
             return this.tabs[0].filteredData;
         }
         //const searchKeyword = parseInt(this.tabs[0].selectedFilter);
-        console.log(searchKeyword)
+        //console.log(searchKeyword)
         return this.tabs[0].filteredData.filter(item => {
-          console.log(this.selectedTimeFilter)
+          console.log(this.tabs[0].selectedTimeFilter)
           //const status = item.Status;
-           return (searchKeyword == item.Status) && (!this.selectedTimeFilter || this.filterDataBySelectedTime(item).length > 0);
+           return (searchKeyword == item.Status) && (this.filterDataBySelectedTime(item.WaktuMasuk));
           //return (!searchKeyword || status == searchKeyword);
         });
      },
 
       filteredData2() {
-        if (!this.tabs[1].selectedFilter) {
+        if (!this.tabs[1].selectedFilter && !this.tabs[1].selectedTimeFilter) {
           return this.tabs[1].data;
         }
 
@@ -325,8 +327,10 @@ export default {
 
         return this.tabs[1].data.filter(item => {
           const status = item.Status1;
+          const date = item.WaktuAkses1.split(' ')[0]
 
-          return status === searchKeyword;
+          return (status === searchKeyword || searchKeyword === 0) &&
+          (!this.tabs[1].selectedTimeFilter || this.filterDataBySelectedTime(date));
         });
       }
     }
