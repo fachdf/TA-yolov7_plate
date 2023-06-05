@@ -134,7 +134,7 @@ import 'moment-timezone';
     methods: {
       async getDataJumlahMasuk() {
         try {
-          const response = await axios.get('http://localhost:8080/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8099/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           this.totalMasuk= response.data.data; // Simpan respons API ke variabel 
           console.log(this.totalMasuk)
         } catch (error) {
@@ -144,7 +144,7 @@ import 'moment-timezone';
 
       async getDataJumlahKeluar() {
           try {
-            const response = await axios.get('http://localhost:8080/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8099/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalKeluar= response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -153,7 +153,7 @@ import 'moment-timezone';
 
         async getDataJumlahPeringatan() {
           try {
-            const response = await axios.get('http://localhost:8080/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8099/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalPeringatan = response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -162,7 +162,7 @@ import 'moment-timezone';
 
         async getNotification() {
         try {
-          const response = await axios.get('http://localhost:8080/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8099/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           // this.items = response.data;
           const list = response.data
           const mappedRiwayatAkses = list.map((item) => ({
