@@ -205,10 +205,10 @@ export default {
               BuktiAkses: item[4],
               WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
               
-              PelatNomor: item[8],
-              RFID: item[5],
-              Status: item[6],
-              Keterangan: item[7]
+              PelatNomor: item[6],
+              RFID: item[7],
+              Status: item[8],
+              Keterangan: item[9]
             };
           });
          
