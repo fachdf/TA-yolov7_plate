@@ -134,7 +134,7 @@ import 'moment-timezone';
     methods: {
       async getDataJumlahMasuk() {
         try {
-          const response = await axios.get('http://192.168.34.201:8099/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response = await axios.get('http://localhost:8080/get_riwayat_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           this.totalMasuk= response.data.data; // Simpan respons API ke variabel 
           console.log(this.totalMasuk)
         } catch (error) {
@@ -144,7 +144,7 @@ import 'moment-timezone';
 
       async getDataJumlahKeluar() {
           try {
-            const response = await axios.get('http://192.168.34.201:8099/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8080/get_keluar_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalKeluar= response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -153,7 +153,7 @@ import 'moment-timezone';
 
         async getDataJumlahPeringatan() {
           try {
-            const response = await axios.get('http://192.168.34.201:8099/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+            const response = await axios.get('http://localhost:8080/get_problem_count'); // Ganti '/api/endpoint' dengan URL API yang sesuai
             this.totalPeringatan = response.data.data; // Simpan respons API ke variabel data
           } catch (error) {
             console.error(error);
@@ -162,8 +162,7 @@ import 'moment-timezone';
 
         async getNotification() {
         try {
-          const response = await axios.get('http://192.168.34.201:8099/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
-          // this.items = response.data;
+          const response = await axios.get('http://localhost:8080/get_peringatan_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list = response.data
           const mappedRiwayatAkses = list.map((item) => ({
             BuktiAkses: item[1],
@@ -180,16 +179,6 @@ import 'moment-timezone';
           console.error(error);
         }
       },
-        
-        // getStatusColor(gateStatus) {
-        //     // Fungsi ini mengembalikan warna berdasarkan nilai status
-        //     // Sesuaikan dengan logika warna Anda
-        //   if (gateStatus === 'Aktif') {
-        //     return 'green';
-        //   } else {
-        //     return 'red';
-        //   }
-        // },
 
         getCurrentDate() {
           const currentDate = new Date();

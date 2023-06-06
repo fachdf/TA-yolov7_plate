@@ -18,16 +18,6 @@
     
     <v-tabs-items v-model="selectedTab" class="left-side">
       <v-tab-item v-for="(tab, index) in tabs" :key="index">
-        <v-card-text>
-        <p class="text-h6 text-color-#FB9503" color="#FB9503"> Keterangan Status</p>
-        <p>
-          0 = Mahasiswa masih didalam area parkir 
-          <br> 
-          1 = Mahasiswa sudah keluar area parkir
-          <br>
-          2 = Mahasiswa masih didalam area parkir (masalah)
-        </p>
-      </v-card-text>
       <v-row>
         <v-col 
         sm="5"
@@ -36,10 +26,10 @@
         >
           <v-select
           max-width="344"
-          class="left-input pt-4 pl-4 mx-auto"
-          v-model="tab.selectedFilter"
-          :items="tab.filterOptions"
-          label="Filter Status"
+          class="pt-4 pl-4 mx-auto"
+          v-model="tab.selectedTimeFilter"
+          :items="tab.timeFilterOptions"
+          label="Filter Waktu"
           outlined
           dense
           ></v-select>
@@ -51,12 +41,12 @@
         md="6"
         offset-md="0"
         >
-          <v-select
+          <v-select v-if="index === 0"
           max-width="344"
-          class="pt-4 pr-4 mx-auto"
-          v-model="tab.selectedTimeFilter"
-          :items="tab.timeFilterOptions"
-          label="Filter Waktu Masuk"
+          class="left-input pt-4 pr-4 mx-auto"
+          v-model="tab.selectedFilter"
+          :items="tab.filterOptions"
+          label="Filter Status"
           outlined
           dense
           ></v-select>
@@ -67,25 +57,25 @@
         :items="getFilteredItems(index)" 
         :items-per-page="rows"
         :sort-by.sync="tab.sortBy"
-        :sort-desc.sync="tab.sortAsc"
+        :sort-desc.sync="tab.sortDesc"
         class="elevation-1 pl-4 pr-4">
           <template v-slot:[`item.BuktiMasuk`]="{ item }">
-            <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)" :disabled=!item.BuktiMasuk>
               Lihat
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiKeluar`]="{item}">
-            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)" :disabled=!item.BuktiKeluar>
               Lihat
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiAkses`]="{item}">
-            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)" :disabled=!item.BuktiAkses>
               Lihat
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiAkses1`]="{item}">
-            <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)">
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses1)" :disabled=!item.BuktiAkses1>
               Lihat
             </v-btn>
           </template>
@@ -134,10 +124,10 @@ export default {
             data: [],
             selectedFilter: null,
             filterOptions: ['Semua', 'Masih Didalam', 'Telah Keluar', 'Bermasalah'],
-            timeFilterOptions: ['All', 'Today', 'Yesterday'],
+            timeFilterOptions: ['Semua', 'Hari ini', 'Kemarin'],
             filteredData:[],
             sortBy: 'WaktuMasuk',
-            sortAsc: false,
+            sortDesc: false,
             selectedTimeFilter: null,
           },
           {
@@ -148,7 +138,6 @@ export default {
               sortable: false,
               value: 'RFID1',
             },
-            // { text: 'ID Mahasiswa', value: 'IDMahasiswa1' },
             { text: 'Pelat Nomor', value: 'PelatNomor1', sortable: false, },
             { text: 'Waktu Akses', value: 'WaktuAkses1' },
             { text: 'Bukti Akses', value: 'BuktiAkses1', sortable: false, },
@@ -156,12 +145,10 @@ export default {
             { text: 'Keterangan', value: 'Keterangan1', sortable: false, },
             ],
             data: [],
-            selectedFilter: null,
-            filterOptions: ['3'],
-            timeFilterOptions: ['All', 'Today', 'Yesterday'],
+            timeFilterOptions: ['Semua', 'Hari ini', 'Kemarin'],
             filteredData:[],
             sortBy: 'WaktuAkses1',
-            sortAsc: false,
+            sortDesc: false,
             selectedTimeFilter: null,
           }
         ],
@@ -172,26 +159,16 @@ export default {
       }
     },
 
-    mounted() {
+    mounted() { 
       this.getDataRiwayat();
-      //setInterval(this.getDataRiwayat,3000);
+      setInterval(this.getDataRiwayat,3000);
     },
 
     methods: {
       async getDataRiwayat() {
         try {
-          const response1 = await axios.get('http://192.168.34.201:8099/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response1 = await axios.get('http://localhost:8080/get_riwayat_parkir'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list = response1.data 
-          // const mappedRiwayat = list.map((item) => ({
-          //   BuktiKeluar: item[2],
-          //   BuktiMasuk: item[0],
-          //   PelatNomor: item[4],
-          //   RFID: item[5],
-          //   Status: item[6],
-          //   WaktuKeluar: moment(item[3]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') || "No Data",
-          //   WaktuMasuk: moment(item[1]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
-          //   Keterangan: item[7]
-          // }));
           const mappedRiwayat = list.map((item) => {
             const waktuKeluar = moment(item[3]);
             const waktuMasuk = moment(item[1]);
@@ -205,18 +182,17 @@ export default {
               BuktiAkses: item[4],
               WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
               
-              PelatNomor: item[8],
-              RFID: item[5],
-              Status: item[6],
-              Keterangan: item[7]
+              PelatNomor: item[6],
+              RFID: item[7],
+              Status: item[8],
+              Keterangan: item[9]
             };
           });
          
-          this.tabs[0].data = mappedRiwayat
-          this.tabs[0].filteredData = this.filterDataBySelectedTime(mappedRiwayat);
+          this.tabs[0].filteredData = mappedRiwayat
           this.tabs[0].sortDesc = false
 
-          const response2 = await axios.get('http://192.168.34.201:8099/get_riwayat_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
+          const response2 = await axios.get('http://localhost:8080/get_riwayat_gagal'); // Ganti '/api/endpoint' dengan URL API yang sesuai
           const list1 = response2.data
           const mappedRiwayatAkses = list1.map((item) => ({
             BuktiAkses1: item[1],
@@ -247,93 +223,93 @@ export default {
 
       getFilteredItems(index) {
         if (index === 0) {
-          return this.filteredData1;
+          return this.filteredData;
         } else if (index === 1) {
-          return this.filteredData2;
+          return this.filteredDataWaktuAkses;
         }
         return [];
-      },
-
-      filterDataByToday(data) {
-        const today = new Date().toISOString().split('T')[0]; // Mendapatkan tanggal hari ini dalam format YYYY-MM-DD
-        // console.log("data masuk")
-        // console.log(this.item.WaktuMasuk.split(' ')[0]);
-        return data.filter(item => {
-          const date = item.WaktuMasuk.split(' ')[0]; // Mendapatkan tanggal dari kolom WaktuMasuk dalam format YYYY-MM-DD
-          console.log("Datamasuk")
-          console.log(date)
-          console.log(today)
-          return date === today; // Filter data berdasarkan hari ini
-        });
-      },
-
-      filterDataByYesterday(data) {
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        const yesterdayString = yesterday.toISOString().split('T')[0]; // Mendapatkan tanggal kemarin dalam format YYYY-MM-DD
-        return data.filter(item => {
-          const date = item.WaktuMasuk.split(' ')[0]; // Mendapatkan tanggal dari kolom WaktuMasuk dalam format YYYY-MM-DD
-          return date === yesterdayString; // Filter data berdasarkan kemarin
-        });
-      },
-      
-      filterDataBySelectedTime(data) {
-        if (this.selectedTimeFilter === 'Today') {
-          return this.filterDataByToday(data); // Filter data berdasarkan hari ini
-        } else if (this.selectedTimeFilter === 'Yesterday') {
-          return this.filterDataByYesterday(data); // Filter data berdasarkan kemarin
-        } else {
-          return data; // Tampilkan semua data jika tidak ada filter waktu yang dipilih
-        }
       },
     },
 
     computed: {
-      filteredData1() {
-        if (!this.tabs[0].selectedFilter && !this.tabs[0].selectedTimeFilter) {
+      filteredData() {
+        const filteredByStatus = this.filteredDataStatusRiwayat;
+        const filteredByTime = this.filteredDataWaktuMasuk;
+        return filteredByStatus.filter(item => filteredByTime.includes(item));
+      },
+
+      filteredDataStatusRiwayat() {
+        if (!this.tabs[0].selectedFilter) {
           return this.tabs[0].filteredData;
         }
         var searchKeyword = parseInt(this.tabs[0].selectedFilter);
-        switch(this.tabs[0].selectedFilter){
-          case("Masih Didalam"):
+        switch (this.tabs[0].selectedFilter) {
+          case 'Masih Didalam':
             searchKeyword = 0;
             break;
-          case("Telah Keluar"):
+          case 'Telah Keluar':
             searchKeyword = 1;
             break;
-          case("Bermasalah"):
+          case 'Bermasalah':
             searchKeyword = 2;
             break;
           default:
             return this.tabs[0].filteredData;
         }
-        //const searchKeyword = parseInt(this.tabs[0].selectedFilter);
-        //console.log(searchKeyword)
         return this.tabs[0].filteredData.filter(item => {
-          console.log(this.tabs[0].selectedTimeFilter)
-          //const status = item.Status;
-           return (searchKeyword == item.Status) && (this.filterDataBySelectedTime(item.WaktuMasuk));
-          //return (!searchKeyword || status == searchKeyword);
+          const status = item.Status;
+          return status === searchKeyword;
         });
-     },
+      },
 
-      filteredData2() {
-        if (!this.tabs[1].selectedFilter && !this.tabs[1].selectedTimeFilter) {
+      filteredDataWaktuMasuk() {
+        if (!this.tabs[0].selectedTimeFilter) {
+          return this.tabs[0].filteredData;
+        }
+        var search = this.tabs[0].selectedTimeFilter.toLowerCase();
+        var today = moment().format('YYYY-MM-DD');
+        var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
+        switch (this.tabs[0].selectedTimeFilter) {
+          case 'Hari ini':
+            search = today;
+            break;
+          case 'Kemarin':
+            search = yesterday;
+            break;
+          default:
+            return this.tabs[0].filteredData;
+        }
+        return this.tabs[0].filteredData.filter(item => {
+          const date = item.WaktuMasuk.split(' ')[0];
+          return date === search;
+        });
+      },
+
+    filteredDataWaktuAkses() {
+      if (!this.tabs[1].selectedTimeFilter) {
           return this.tabs[1].data;
         }
-
-        const searchKeyword = parseInt(this.tabs[1].selectedFilter);
-
+        var search = this.tabs[1].selectedTimeFilter.toLowerCase();
+        var today = moment().format('YYYY-MM-DD');
+        var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
+        switch(this.tabs[1].selectedTimeFilter){
+          case("Hari ini"):
+            search = today;
+            break;
+          case 'Kemarin':
+            search = yesterday;
+            break; 
+          default:
+            return this.tabs[1].data;
+        }
+        
         return this.tabs[1].data.filter(item => {
-          const status = item.Status1;
           const date = item.WaktuAkses1.split(' ')[0]
-
-          return (status === searchKeyword || searchKeyword === 0) &&
-          (!this.tabs[1].selectedTimeFilter || this.filterDataBySelectedTime(date));
+          console.log(date)
+            return date === search;
         });
-      }
-    }
+     },
+  }
 }
 </script>
 
