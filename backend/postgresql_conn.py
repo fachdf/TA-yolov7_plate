@@ -1087,7 +1087,7 @@ def get_all_peringatan_gagal():
         cur.close()
         cur.close()
         conn.close()
-        server.stop()
+        //server.stop()
         # Return a success message
         return rows
     

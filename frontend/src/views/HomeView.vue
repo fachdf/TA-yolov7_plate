@@ -167,11 +167,12 @@ import 'moment-timezone';
           const mappedRiwayatAkses = list.map((item) => ({
             BuktiAkses: item[1],
             WaktuAkses: moment(item[0]).tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
-            PelatNomor: item[2],
-            RFID: item[3],
-            Status: item[4],
-            Keterangan: item[5],
-            IDMahasiswa: item[6]
+            BuktiMasuk: item[3],
+            PelatNomor: item[4],
+            RFID: item[5],
+            Status: item[6],
+            Keterangan: item[7],
+            IDMahasiswa: item[8]
           }));
           this.notifications = mappedRiwayatAkses
           console.log(response)
