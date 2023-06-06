@@ -18,40 +18,40 @@
     
     <v-tabs-items v-model="selectedTab" class="left-side">
       <v-tab-item v-for="(tab, index) in tabs" :key="index">
-      <v-row>
-        <v-col 
-        sm="5"
-        md="6"
-        mr=auto 
-        >
-          <v-select
-          max-width="344"
-          class="pt-4 pl-4 mx-auto"
-          v-model="tab.selectedTimeFilter"
-          :items="tab.timeFilterOptions"
-          label="Filter Waktu"
-          outlined
-          dense
-          ></v-select>
-        </v-col>
+        <v-row>
+          <v-col 
+          sm="5"
+          md="6"
+          mr=auto 
+          >
+            <v-select
+            max-width="344"
+            class="pt-4 pl-4 mx-auto"
+            v-model="tab.selectedTimeFilter"
+            :items="tab.timeFilterOptions"
+            label="Filter Waktu"
+            outlined
+            dense
+            ></v-select>
+          </v-col>
 
-        <v-col
-        sm="5"
-        offset-sm="2"
-        md="6"
-        offset-md="0"
-        >
-          <v-select v-if="index === 0"
-          max-width="344"
-          class="left-input pt-4 pr-4 mx-auto"
-          v-model="tab.selectedFilter"
-          :items="tab.filterOptions"
-          label="Filter Status"
-          outlined
-          dense
-          ></v-select>
-        </v-col>
-      </v-row>  
+          <v-col
+          sm="5"
+          offset-sm="2"
+          md="6"
+          offset-md="0"
+          >
+            <v-select v-if="index === 0"
+            max-width="344"
+            class="left-input pt-4 pr-4 mx-auto"
+            v-model="tab.selectedFilter"
+            :items="tab.filterOptions"
+            label="Filter Status"
+            outlined
+            dense
+            ></v-select>
+          </v-col>
+        </v-row>  
         <v-data-table 
         :headers="tab.headers" 
         :items="getFilteredItems(index)" 
@@ -80,11 +80,13 @@
             </v-btn>
           </template>
         </v-data-table>
-        <v-dialog v-model="dialogVisible" persistent width="auto">
-          <v-img :src="popupLink" width="100%"></v-img>
-          <v-card-actions>
+        <v-dialog v-model="dialogVisible" persistent width="auto" :elevation="0" dark>
+          <v-img dark :src="popupLink" width="100%"></v-img>
+          <v-card-actions dark>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="closeDialog">Tutup</v-btn>
+            <v-btn color="primary" text @click="closeDialog" block variant="flat" dark>
+              Tutup
+            </v-btn>
           </v-card-actions>
         </v-dialog>
       </v-tab-item>
@@ -127,7 +129,7 @@ export default {
             timeFilterOptions: ['Semua', 'Hari ini', 'Kemarin'],
             filteredData:[],
             sortBy: 'WaktuMasuk',
-            sortDesc: false,
+            sortDesc: true,
             selectedTimeFilter: null,
           },
           {
@@ -148,7 +150,7 @@ export default {
             timeFilterOptions: ['Semua', 'Hari ini', 'Kemarin'],
             filteredData:[],
             sortBy: 'WaktuAkses1',
-            sortDesc: false,
+            sortDesc: true,
             selectedTimeFilter: null,
           }
         ],
@@ -176,12 +178,11 @@ export default {
 
             return {
               BuktiMasuk: item[0],
-              WaktuMasuk: waktuMasuk.isValid() ? waktuMasuk.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
+              WaktuMasuk: waktuMasuk.isValid() ? waktuMasuk.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "–",
               BuktiKeluar: item[2],
-              WaktuKeluar: waktuKeluar.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
+              WaktuKeluar: waktuKeluar.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "–",
               BuktiAkses: item[4],
-              WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "No Data",
-              
+              WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "–",
               PelatNomor: item[6],
               RFID: item[7],
               Status: item[8],
@@ -285,30 +286,30 @@ export default {
         });
       },
 
-    filteredDataWaktuAkses() {
-      if (!this.tabs[1].selectedTimeFilter) {
-          return this.tabs[1].data;
-        }
-        var search = this.tabs[1].selectedTimeFilter.toLowerCase();
-        var today = moment().format('YYYY-MM-DD');
-        var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
-        switch(this.tabs[1].selectedTimeFilter){
-          case("Hari ini"):
-            search = today;
-            break;
-          case 'Kemarin':
-            search = yesterday;
-            break; 
-          default:
+      filteredDataWaktuAkses() {
+        if (!this.tabs[1].selectedTimeFilter) {
             return this.tabs[1].data;
-        }
-        
-        return this.tabs[1].data.filter(item => {
-          const date = item.WaktuAkses1.split(' ')[0]
-          console.log(date)
-            return date === search;
-        });
-     },
+          }
+          var search = this.tabs[1].selectedTimeFilter.toLowerCase();
+          var today = moment().format('YYYY-MM-DD');
+          var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD');
+          switch(this.tabs[1].selectedTimeFilter){
+            case("Hari ini"):
+              search = today;
+              break;
+            case 'Kemarin':
+              search = yesterday;
+              break; 
+            default:
+              return this.tabs[1].data;
+          }
+          
+          return this.tabs[1].data.filter(item => {
+            const date = item.WaktuAkses1.split(' ')[0]
+            console.log(date)
+              return date === search;
+          });
+      },
   }
 }
 </script>
