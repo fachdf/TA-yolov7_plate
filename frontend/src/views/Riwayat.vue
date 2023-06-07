@@ -81,7 +81,7 @@
           <v-img dark :src="popupLink" width="100%"></v-img>
           <v-card-actions dark>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="closeDialog" block variant="flat" dark>
+            <v-btn color="primary" text @click="closeDialog" block variant="outlined" dark>
               Tutup
             </v-btn>
           </v-card-actions>
