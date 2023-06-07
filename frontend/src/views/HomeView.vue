@@ -121,13 +121,13 @@ import 'moment-timezone';
 
     mounted() {
       this.getDataJumlahMasuk();
-      //setInterval(this.getDataJumlahMasuk, 3000);
+      setInterval(this.getDataJumlahMasuk, 3000);
       this.getDataJumlahKeluar();
-      //setInterval(this.getDataJumlahKeluar, 3000);
+      setInterval(this.getDataJumlahKeluar, 3000);
       this.getDataJumlahPeringatan();
-      //setInterval(this.getDataJumlahPeringatan, 3000);
+      setInterval(this.getDataJumlahPeringatan, 3000);
       this.getNotification();
-      //setInterval(this.getNotification, 3000);
+      setInterval(this.getNotification, 3000);
       setInterval(this.getCurrentDate, 1000);
     },
 
