@@ -10,7 +10,7 @@
       <v-spacer></v-spacer>
     </v-card-title>
 
-    <v-tabs v-model="selectedTab" class="pl-4" fixed-tabs color="#FB9503">
+    <v-tabs v-model="selectedTab" class="pl-4 pb-4" fixed-tabs color="#FB9503">
       <v-tab v-for="(tab, index) in tabs" :key="index">
         {{ tab.title }}
       </v-tab>
