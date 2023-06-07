@@ -26,11 +26,10 @@
           >
             <v-select
             max-width="344"
-            class="pt-4 pl-4 mx-auto"
+            class="pt-4 pl-4"
             v-model="tab.selectedTimeFilter"
             :items="tab.timeFilterOptions"
             label="Filter Waktu"
-            outlined
             dense
             ></v-select>
           </v-col>
@@ -42,12 +41,10 @@
           offset-md="0"
           >
             <v-select v-if="index === 0"
-            max-width="344"
             class="left-input pt-4 pr-4 mx-auto"
             v-model="tab.selectedFilter"
             :items="tab.filterOptions"
             label="Filter Status"
-            outlined
             dense
             ></v-select>
           </v-col>
@@ -57,7 +54,7 @@
         :items="getFilteredItems(index)" 
         :items-per-page="rows"
         :sort-by.sync="tab.sortBy"
-        :sort-desc.sync="tab.sortDesc"
+        :sort-desc.sync="sortDesc"
         class="elevation-1 pl-4 pr-4">
           <template v-slot:[`item.BuktiMasuk`]="{ item }">
             <v-btn color="primary" rounded @click="openDialog(item.BuktiMasuk)" :disabled=!item.BuktiMasuk>
@@ -129,7 +126,6 @@ export default {
             timeFilterOptions: ['Semua', 'Hari ini', 'Kemarin'],
             filteredData:[],
             sortBy: 'WaktuMasuk',
-            sortDesc: true,
             selectedTimeFilter: null,
           },
           {
@@ -150,12 +146,12 @@ export default {
             timeFilterOptions: ['Semua', 'Hari ini', 'Kemarin'],
             filteredData:[],
             sortBy: 'WaktuAkses1',
-            sortDesc: true,
             selectedTimeFilter: null,
           }
         ],
         dialogVisible: false,
         popupLink: '',
+        sortDesc: true,
         rows: 10,
         selectedTab: 0,
       }
