@@ -79,10 +79,14 @@ def identifikasi_masuk():
                 keterangan = result
                 #return jsonify({'message': keterangan, 'code': code, 'user_id' : id_mhs})
         else: # Pelat tidak terdeteksi : HARUS ULANGI
-            keterangan = "RFID OK, Pelat tidak terdeteksi"
+            keterangan = "Pelat tidak terdeteksi"
             code = 501
             #keterangan = result
-            id_mhs = None
+            pelat = ""
+            status = 3
+            id_mhs = add_mhs_masuk(rfid, pelat, status)
+            result = add_riwayat_gagal(id_mhs, keterangan)
+            keterangan = result
 
     else: # RFID telah tersimpan di database dan sedang parkir
         status = 3 
@@ -151,7 +155,7 @@ def identifikasi_keluar():
             if mhs != None: # Jika pelat nomor ada di data mhs yang parkir
                 pelat_nomor_terdaftar = mhs[0][2]
                 status = 2 
-                rfid = mhs[0][0]
+                rfid = mhs[0][1]
                 id_mhs = update_mhs_keluar(rfid, status)
                 code = 506 # RFID beda tp pelat ada
                 keterangan = "Pelat Kendaraan Terdaftar namun RFID berbeda"
@@ -167,9 +171,14 @@ def identifikasi_keluar():
                 
         else : # Pelat tidak terdeteksi = ULANG
             #os.remove(bukti_keluar)
-            keterangan = "Error pelat tidak terdeteksi"
+            keterangan = "Pelat tidak terdeteksi"
             code = 501
-            id_mhs = None
+            #keterangan = result
+            pelat = ""
+            status = 3
+            id_mhs = add_mhs_masuk(rfid, pelat, status)
+            result = add_riwayat_gagal(id_mhs, keterangan)
+            keterangan = result
 
     #os.remove(bukti_keluar) 
     return jsonify({'message': keterangan, 'code' : code, 'user_id' : id_mhs})   
