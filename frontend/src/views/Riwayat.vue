@@ -67,7 +67,7 @@
             </v-btn>
           </template>
           <template v-slot:[`item.BuktiAkses`]="{item}">
-            <v-btn color="primary" rounded @click="openDialog(item.BuktiKeluar)" :disabled=!item.BuktiAkses>
+            <v-btn color="primary" rounded @click="openDialog(item.BuktiAkses)" :disabled=!item.BuktiAkses>
               Lihat
             </v-btn>
           </template>
