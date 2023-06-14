@@ -178,7 +178,7 @@ export default {
               BuktiKeluar: item[2],
               WaktuKeluar: waktuKeluar.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "–",
               BuktiAkses: item[4],
-              WaktuAkses: waktuAkses.isValid() ? waktuKeluar.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "–",
+              WaktuAkses: waktuAkses.isValid() ? waktuAkses.tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss') : "–",
               PelatNomor: item[6],
               RFID: item[7],
               Status: item[8],
