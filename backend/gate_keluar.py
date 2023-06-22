@@ -37,7 +37,7 @@ def capture_photo(number):
             encoded_image = base64.b64encode(f.read())
 
         # Set the API endpoint URL
-        url = 'http://192.168.34.201:8099/identifikasi_keluar'
+        url = 'http://localhost:8099/identifikasi_keluar'
 
         # Set the request headers
         # headers = {"Content-Type": "image/jpeg"}

@@ -11,9 +11,9 @@ import os
 import playsound
 from datetime import datetime 
 
-#url_deploy = 'http://192.168.34.201:8099/'
+url_deploy = 'http://localhost:8099/'
 #url_deploy = 'https://gpujtk.polban.studio/'
-url_deploy = 'http://192.168.34.201:8099/'
+#url_deploy = 'http://localhost:8099/'
 def upload_file(filename):
 
   cloudinary.config(

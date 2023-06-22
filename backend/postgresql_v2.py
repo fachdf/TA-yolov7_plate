@@ -2,103 +2,13 @@ import psycopg2
 from datetime import datetime
 from sshtunnel import SSHTunnelForwarder
 
-def add_gate(type, status):
-    try:
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
-        #  ssh_username='fachrid4',
-        #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
-        #  remote_bind_address=('localhost', 5432),
-        #  local_bind_address=('localhost', 5434))
-        # server.start()
-        # conn = psycopg2.connect(
-        #     host= server.local_bind_host,
-        #     port= server.local_bind_port,
-        #     database="gateparking",
-        #     user="pari",
-        #     password="kota407"
-        # )
-        conn = psycopg2.connect(
-            host= "localhost",
-            port= "5432",
-            database="gateparking",
-            user="postgres",
-            password="postgres"
-        )
-        
-        # Create a cursor object
-        cur = conn.cursor()
-        
-        # Execute the SQL query to insert the text into the database
-        cur.execute("INSERT INTO gate (gate_type, gate_status) VALUES (%s, %s)", (type, status))
-        
-        # Commit the transaction
-        conn.commit()
-        
-        # Close the cursor and connection objects
-        cur.close()
-        cur.close()
-        conn.close()
-        
-        # Return a success message
-        return "Text saved to database successfully"
-    
-    except (Exception, psycopg2.DatabaseError) as error:
-        # If an error occurs, rollback the transaction and return an error message
-        conn.rollback()
-        return f"Error while saving new gate to database: {error}"
 
-def update_gate_status(id, status):
-    try:
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
-        #  ssh_username='fachrid4',
-        #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
-        #  remote_bind_address=('localhost', 5432),
-        #  local_bind_address=('localhost', 5434))
-        # server.start()
-        # conn = psycopg2.connect(
-        #     host= server.local_bind_host,
-        #     port= server.local_bind_port,
-        #     database="gateparking",
-        #     user="pari",
-        #     password="kota407"
-        # )
-        conn = psycopg2.connect(
-            host= "localhost",
-            port= "5432",
-            database="gateparking",
-            user="postgres",
-            password="postgres"
-        )
-        
-        # Create a cursor object
-        cur = conn.cursor()
-        
-        # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE gate SET gate_status = %s WHERE gate_id = %s", (status, id))
-        
-        # Commit the transaction
-        conn.commit()
-        
-        # Close the cursor and connection objects
-        cur.close()
-        cur.close()
-        conn.close()
-        
-        # Return a success message
-        return "Text saved to database successfully"
-    
-    except (Exception, psycopg2.DatabaseError) as error:
-        # If an error occurs, rollback the transaction and return an error message
-        conn.rollback()
-        return f"Error while saving new gate to database: {error}"
-
-# Fungsi untuk etry data mahasiswa masuk ; return id
+# Fungsi untuk etry data pengendara masuk ; return id
 def add_mhs_masuk(rfid, pelat, status):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -114,7 +24,7 @@ def add_mhs_masuk(rfid, pelat, status):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -125,21 +35,23 @@ def add_mhs_masuk(rfid, pelat, status):
         pelat = pelat.replace(" ", "")  # Remove all spaces
 
         # Execute the SQL query to insert the text into the database
-        #cur.execute("INSERT INTO mahasiswa (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s)", (rfid ,pelat, 0))
+        #cur.execute("INSERT INTO pengendara (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s)", (rfid ,pelat, 0))
         
         #new_id = cur.fetchone()[0]
         #print(new_id)
 
-        sql = "INSERT INTO mahasiswa (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s) RETURNING user_id;"
-
+        sql = "INSERT INTO pengendara (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s) RETURNING user_id;"
         data = (rfid, pelat, status)
         cur.execute(sql, data)
         new_id = cur.fetchone()[0]
-        # Commit the transaction
-        conn.commit()
         
+        # Commit the transaction
+        sql2 = "INSERT INTO kendaraan (kendaraan_pelat, user_user_id) VALUES (%s, %s);"
+        
+        data2 = (pelat, new_id)
+        cur.execute(sql2, data2)
         # Close the cursor and connection objects
-        cur.close()
+        conn.commit()
         cur.close()
         conn.close()
         
@@ -149,15 +61,17 @@ def add_mhs_masuk(rfid, pelat, status):
     
     except (Exception, psycopg2.DatabaseError) as error:
         # If an error occurs, rollback the transaction and return an error message
-        conn.rollback()
+        if conn:
+         conn.rollback()
         return f"Error while saving new user to database: {error}"
 
-# Entry data mahasiswa gagal masuk/keluar
+# Entry data pengendara gagal masuk/keluar
 # Fungsi untuk mengubah status mhs setelah keluar (0 = masuk, 1 = keluar, 2 = gagal scan) ; return id
 def update_mhs_keluar(rfid, status):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -173,7 +87,7 @@ def update_mhs_keluar(rfid, status):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -182,11 +96,11 @@ def update_mhs_keluar(rfid, status):
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        #cur.execute("INSERT INTO mahasiswa (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s)", (rfid ,pelat, 0))
+        #cur.execute("INSERT INTO pengendara (user_rfid, user_pelat, user_status) VALUES (%s, %s, %s)", (rfid ,pelat, 0))
         
         #new_id = cur.fetchone()[0]
         #print(new_id)
-        sql = "UPDATE mahasiswa SET user_status = %s WHERE user_rfid = %s AND user_status IN (%s,%s) RETURNING user_id"
+        sql = "UPDATE pengendara SET user_status = %s WHERE user_rfid = %s AND user_status IN (%s,%s) RETURNING user_id"
         print(sql)
         data = (status, rfid, 0,2)
         cur.execute(sql, data)
@@ -208,14 +122,13 @@ def update_mhs_keluar(rfid, status):
         conn.rollback()
         return None
 
-# Fungsi untuk menambahkan mahasiswa keluar namun rfid belum pernah digunakan untuk masuk
+# Fungsi untuk menambahkan pengendara keluar namun rfid belum pernah digunakan untuk masuk
 
 def get_mhs_data_by_rfid(rfid):
     try:
         # establish a connection to the database
         # Connect to the PostgreSQL database
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -231,7 +144,7 @@ def get_mhs_data_by_rfid(rfid):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -240,7 +153,7 @@ def get_mhs_data_by_rfid(rfid):
         cur = conn.cursor()
         
         # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
-        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_rfid = %s AND user_status IN (%s, %s)", (rfid, 0,2))
+        cur.execute("SELECT user_id, user_rfid, user_pelat FROM pengendara WHERE user_rfid = %s AND user_status IN (%s, %s)", (rfid, 0,2))
         
         # fetch all the rows from the result set
         rows = cur.fetchall()
@@ -256,17 +169,16 @@ def get_mhs_data_by_rfid(rfid):
         print(error)
         return None
         
-    # finally:
-    #     # close the cursor and connection objects
-    #     cur.close()
-    #     conn.close()
+    finally:
+        # close the cursor and connection objects
+        cur.close()
+        conn.close()
 
 def get_mhs_data_by_pelat(pelat):
     try:
         # establish a connection to the database
         # Connect to the PostgreSQL database
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -282,7 +194,7 @@ def get_mhs_data_by_pelat(pelat):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -291,7 +203,7 @@ def get_mhs_data_by_pelat(pelat):
         cur = conn.cursor()
         
         # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
-        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_pelat = %s AND user_status = %s", (pelat, 0))
+        cur.execute("SELECT user_id, user_rfid, user_pelat FROM pengendara WHERE user_pelat = %s AND user_status = %s", (pelat, 0))
         
         # fetch all the rows from the result set
         rows = cur.fetchall()
@@ -317,8 +229,7 @@ def get_mhs_data_by_id(id):
     try:
         # establish a connection to the database
         # Connect to the PostgreSQL database
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -334,7 +245,7 @@ def get_mhs_data_by_id(id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -343,7 +254,7 @@ def get_mhs_data_by_id(id):
         cur = conn.cursor()
         
         # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
-        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_id = %s AND user_status = 0", (id))
+        cur.execute("SELECT user_id, user_rfid, user_pelat FROM pengendara WHERE user_id = %s AND user_status = 0", (id))
         
         # fetch all the rows from the result set
         rows = cur.fetchall()
@@ -366,8 +277,7 @@ def get_mhs_data_by_pelat(pelat):
     try:
         # establish a connection to the database
         # Connect to the PostgreSQL database
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -383,7 +293,7 @@ def get_mhs_data_by_pelat(pelat):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -392,7 +302,7 @@ def get_mhs_data_by_pelat(pelat):
         cur = conn.cursor()
         
         # execute the SELECT query to retrieve RFID and Plat Nomor data from gateparking table
-        cur.execute("SELECT user_id, user_rfid, user_pelat FROM mahasiswa WHERE user_pelat = %s AND user_status = %s", (pelat, 0))
+        cur.execute("SELECT user_id, user_rfid, user_pelat FROM pengendara WHERE user_pelat = %s AND user_status = %s", (pelat, 0))
         
         # fetch all the rows from the result set
         rows = cur.fetchall()
@@ -414,13 +324,12 @@ def get_mhs_data_by_pelat(pelat):
         cur.close()
         conn.close()
 
-
-
 # Fungsi untuk menambahkan waktu masuk dan bukti masuk
 def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -436,7 +345,7 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -447,7 +356,7 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
         now = datetime.now(now) # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("INSERT INTO riwayat_parkir (bukti_masuk, waktu_masuk, user_user_id) VALUES (%s, %s, %s)", (bukti_masuk, now, id_mhs))
+        cur.execute("INSERT INTO riwayat (bukti_akses, waktu_akses, user_user_id) VALUES (%s, %s, %s)", (bukti_masuk, now, id_mhs))
         
         # Commit the transaction
         conn.commit()
@@ -469,7 +378,8 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
 def add_riwayat_masuk(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -485,7 +395,7 @@ def add_riwayat_masuk(id_mhs, keterangan):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -496,7 +406,7 @@ def add_riwayat_masuk(id_mhs, keterangan):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("INSERT INTO riwayat_parkir (waktu_masuk, waktu_akses_gagal, user_user_id, keterangan) VALUES (%s, %s, %s, %s)", (now, now, id_mhs, keterangan))
+        cur.execute("INSERT INTO riwayat (waktu_akses, user_user_id, keterangan, riwayat_type) VALUES (%s, %s, %s)", (now, id_mhs, keterangan))
         
         # Commit the transaction
         conn.commit()
@@ -517,7 +427,8 @@ def add_riwayat_masuk(id_mhs, keterangan):
 def add_riwayat_gagal(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -533,7 +444,7 @@ def add_riwayat_gagal(id_mhs, keterangan):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -544,7 +455,7 @@ def add_riwayat_gagal(id_mhs, keterangan):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("INSERT INTO riwayat_parkir (waktu_akses_gagal, user_user_id, keterangan) VALUES (%s, %s, %s)", (now, id_mhs, keterangan))
+        cur.execute("INSERT INTO riwayat (waktu_akses_gagal, user_user_id, keterangan) VALUES (%s, %s, %s)", (now, id_mhs, keterangan))
         
         # Commit the transaction
         conn.commit()
@@ -565,7 +476,8 @@ def add_riwayat_gagal(id_mhs, keterangan):
 def update_riwayat_gagal(id_mhs, keterangan):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -581,7 +493,7 @@ def update_riwayat_gagal(id_mhs, keterangan):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -592,7 +504,7 @@ def update_riwayat_gagal(id_mhs, keterangan):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET waktu_akses_gagal = %s, keterangan = %s WHERE user_user_id = %s", (now, keterangan, id_mhs ))
+        cur.execute("UPDATE riwayat SET waktu_akses_gagal = %s, keterangan = %s WHERE user_user_id = %s", (now, keterangan, id_mhs ))
         
         # Commit the transaction
         conn.commit()
@@ -614,7 +526,8 @@ def update_riwayat_gagal(id_mhs, keterangan):
 def update_bukti_masuk(bukti_masuk, user_id):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -630,7 +543,7 @@ def update_bukti_masuk(bukti_masuk, user_id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -639,7 +552,7 @@ def update_bukti_masuk(bukti_masuk, user_id):
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET bukti_masuk = %s , bukti_akses_gagal = %s WHERE user_user_id = %s", (bukti_masuk, bukti_masuk, user_id))
+        cur.execute("UPDATE riwayat SET bukti_masuk = %s WHERE user_user_id = %s", (bukti_masuk, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -660,7 +573,8 @@ def update_bukti_masuk(bukti_masuk, user_id):
 def update_bukti_gagal(bukti_gagal, user_id):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -676,7 +590,7 @@ def update_bukti_gagal(bukti_gagal, user_id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -685,7 +599,7 @@ def update_bukti_gagal(bukti_gagal, user_id):
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET bukti_akses_gagal = %s WHERE user_user_id = %s", (bukti_gagal, user_id))
+        cur.execute("UPDATE riwayat SET bukti_akses_gagal = %s WHERE user_user_id = %s", (bukti_gagal, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -707,7 +621,8 @@ def update_bukti_gagal(bukti_gagal, user_id):
 def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -723,7 +638,7 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -734,7 +649,7 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET bukti_keluar = %s, waktu_keluar = %s WHERE user_user_id = %s", (bukti_keluar, now, user_id))
+        cur.execute("UPDATE riwayat SET bukti_keluar = %s, waktu_keluar = %s WHERE user_user_id = %s", (bukti_keluar, now, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -756,7 +671,8 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
 def update_riwayat_keluar(user_id, keterangan):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -772,7 +688,7 @@ def update_riwayat_keluar(user_id, keterangan):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -783,7 +699,7 @@ def update_riwayat_keluar(user_id, keterangan):
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, waktu_akses_gagal = %s, keterangan = %s WHERE user_user_id = %s", (now, now, keterangan, user_id))
+        cur.execute("UPDATE riwayat SET waktu_keluar = %s, keterangan = %s WHERE user_user_id = %s", (now, keterangan, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -805,7 +721,8 @@ def update_riwayat_keluar(user_id, keterangan):
 def update_bukti_keluar(bukti_keluar, user_id):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -821,7 +738,7 @@ def update_bukti_keluar(bukti_keluar, user_id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -830,7 +747,7 @@ def update_bukti_keluar(bukti_keluar, user_id):
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET bukti_keluar = %s, bukti_akses_gagal = %s WHERE user_user_id = %s", (bukti_keluar, bukti_keluar, user_id))
+        cur.execute("UPDATE riwayat SET bukti_keluar = %s WHERE user_user_id = %s", (bukti_keluar, user_id))
         
         # Commit the transaction
         conn.commit()
@@ -851,7 +768,8 @@ def update_bukti_keluar(bukti_keluar, user_id):
 def update_izinkan_keluar(bukti_keluar, user_id):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -867,7 +785,7 @@ def update_izinkan_keluar(bukti_keluar, user_id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -877,8 +795,8 @@ def update_izinkan_keluar(bukti_keluar, user_id):
 
         now = datetime.now() 
         # Execute the SQL query to insert the text into the database
-        cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s, keterangan = %s WHERE user_user_id = %s", (now, bukti_keluar, keterangan, user_id))
-        cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (1, user_id))
+        cur.execute("UPDATE riwayat SET waktu_keluar = %s, bukti_keluar = %s, keterangan = %s WHERE user_user_id = %s", (now, bukti_keluar, keterangan, user_id))
+        cur.execute("UPDATE pengendara SET user_status = %s WHERE user_id = %s", (1, user_id))
         # Commit the transaction
         conn.commit()
         
@@ -898,7 +816,8 @@ def update_izinkan_keluar(bukti_keluar, user_id):
 def update_tolak_keluar(user_id):
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -914,7 +833,7 @@ def update_tolak_keluar(user_id):
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -924,9 +843,9 @@ def update_tolak_keluar(user_id):
 
         now = datetime.now() 
         # Execute the SQL query to insert the text into the database
-        #cur.execute("UPDATE riwayat_parkir SET waktu_keluar = %s, bukti_keluar = %s WHERE user_user_id = %s", (now, bukti_keluar, user_id))
-        #cur.execute("UPDATE mahasiswa SET user_status = %s WHERE user_id = %s", (2, user_id))
-        cur.execute("UPDATE riwayat_parkir SET keterangan = %s WHERE user_user_id = %s", (keterangan, user_id))
+        #cur.execute("UPDATE riwayat SET waktu_keluar = %s, bukti_keluar = %s WHERE user_user_id = %s", (now, bukti_keluar, user_id))
+        #cur.execute("UPDATE pengendara SET user_status = %s WHERE user_id = %s", (2, user_id))
+        cur.execute("UPDATE riwayat SET keterangan = %s WHERE user_user_id = %s", (keterangan, user_id))
         # Commit the transaction
         conn.commit()
         
@@ -943,10 +862,11 @@ def update_tolak_keluar(user_id):
         conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
 ####
-def get_all_riwayat_parkir():
+def get_all_riwayat():
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -962,7 +882,7 @@ def get_all_riwayat_parkir():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -971,7 +891,7 @@ def get_all_riwayat_parkir():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, rp.bukti_akses_gagal, rp.waktu_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status IN (0,1,2)")
+        cur.execute("SELECT rp.bukti_masuk, rp.waktu_masuk, rp.bukti_keluar, rp.waktu_keluar, rp.bukti_akses_gagal, rp.waktu_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat rp JOIN pengendara m ON rp.user_user_id = m.user_id WHERE m.user_status IN (0,1,2)")
         
         # Commit the transaction
         rows = cur.fetchall()
@@ -992,7 +912,8 @@ def get_all_riwayat_parkir():
 def get_all_riwayat_gagal():
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -1008,7 +929,7 @@ def get_all_riwayat_gagal():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -1017,7 +938,7 @@ def get_all_riwayat_gagal():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 3")
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat rp JOIN pengendara m ON rp.user_user_id = m.user_id WHERE m.user_status = 3")
         
         # Commit the transaction
         rows = cur.fetchall()
@@ -1040,8 +961,7 @@ def get_all_peringatan_gagal():
     try:
         # Connect to the PostgreSQL database
         # Connect to the PostgreSQL database
-        # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -1057,7 +977,7 @@ def get_all_peringatan_gagal():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -1066,7 +986,7 @@ def get_all_peringatan_gagal():
         cur = conn.cursor()
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, rp.waktu_masuk, rp.bukti_masuk, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat_parkir rp JOIN mahasiswa m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
+        cur.execute("SELECT rp.waktu_akses_gagal, rp.bukti_akses_gagal, rp.waktu_masuk, rp.bukti_masuk, m.user_pelat, m.user_rfid, m.user_status, rp.keterangan, m.user_id FROM riwayat rp JOIN pengendara m ON rp.user_user_id = m.user_id WHERE m.user_status = 2")
         
         # Commit the transaction
         rows = cur.fetchall()
@@ -1081,14 +1001,14 @@ def get_all_peringatan_gagal():
     
     except (Exception, psycopg2.DatabaseError) as error:
         # If an error occurs, rollback the transaction and return an error message
-        # if conn:
-        #  conn.rollback()
+        conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
 
 def get_jml_parkir():
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -1104,7 +1024,7 @@ def get_jml_parkir():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -1115,7 +1035,7 @@ def get_jml_parkir():
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status IN (0,1,2)")
+        cur.execute("SELECT COUNT(*) FROM pengendara WHERE user_status IN (0,1,2)")
 
         
         result = cur.fetchone()[0]
@@ -1135,7 +1055,8 @@ def get_jml_parkir():
 def get_jml_keluar_parkir():
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -1151,7 +1072,7 @@ def get_jml_keluar_parkir():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -1162,7 +1083,7 @@ def get_jml_keluar_parkir():
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status = 1")
+        cur.execute("SELECT COUNT(*) FROM pengendara WHERE user_status = 1")
 
         
         result = cur.fetchone()[0]
@@ -1183,7 +1104,8 @@ def get_jml_keluar_parkir():
 def get_jml_problem_parkir():
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # Connect to the PostgreSQL database
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -1199,7 +1121,7 @@ def get_jml_problem_parkir():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -1210,7 +1132,7 @@ def get_jml_problem_parkir():
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status = 2")
+        cur.execute("SELECT COUNT(*) FROM pengendara WHERE user_status = 2")
 
         
         result = cur.fetchone()[0]
@@ -1228,51 +1150,10 @@ def get_jml_problem_parkir():
         conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
 
-# def get_jml_parkir():
-#     try:
-#         # Connect to the PostgreSQL database
-#         server = SSHTunnelForwarder(('103.209.131.66', 8022),
-#          ssh_username='fachrid4',
-#          ssh_pkey='D:\\Download\\ssh\\id_rsa',
-#          remote_bind_address=('localhost', 5432),
-#          local_bind_address=('localhost', 5434))
-#         server.start()
-#         conn = psycopg2.connect(
-#             host= server.local_bind_host,
-#             port= server.local_bind_port,
-#             database="gateparking",
-#             user="pari",
-#             password="kota407"
-#         )
-        
-#         # Create a cursor object
-#         cur = conn.cursor()
-        
-#         now = datetime.now() # Create timestamp
-
-#         # Execute the SQL query to insert the text into the database
-#         cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status IN (0,1,2)")
-
-        
-#         result = cur.fetchone()[0]
-        
-#         # Close the cursor and connection objects
-#         cur.close()
-#         cur.close()
-#         conn.close()
-        
-#         # Return a success message
-#         return result
-#     except (Exception, psycopg2.DatabaseError) as error:
-#         # If an error occurs, rollback the transaction and return an error message
-#         conn.rollback()
-#         return f"Error while saving new riwayat to database: {error}"
-
 def get_test():
-    conn = None
     try:
         # Connect to the PostgreSQL database
-        # server = SSHTunnelForwarder(('192.168.34.201', 22),
+        # server = SSHTunnelForwarder(('103.209.131.66', 8022),
         #  ssh_username='fachrid4',
         #  ssh_pkey='D:\\Download\\ssh\\id_rsa',
         #  remote_bind_address=('localhost', 5432),
@@ -1288,7 +1169,7 @@ def get_test():
         conn = psycopg2.connect(
             host= "localhost",
             port= "5432",
-            database="gateparking",
+            database="gateparkingotomatis",
             user="postgres",
             password="postgres"
         )
@@ -1299,7 +1180,7 @@ def get_test():
         now = datetime.now() # Create timestamp
 
         # Execute the SQL query to insert the text into the database
-        cur.execute("SELECT COUNT(*) FROM mahasiswa WHERE user_status = 1")
+        cur.execute("SELECT COUNT(*) FROM pengendara WHERE user_status = 1")
 
         
         result = cur.fetchone()[0]
@@ -1314,8 +1195,7 @@ def get_test():
     
     except (Exception, psycopg2.DatabaseError) as error:
         # If an error occurs, rollback the transaction and return an error message
-        if conn:
-         conn.rollback()
+        conn.rollback()
         return f"Error while saving new riwayat to database: {error}"
 
 def jaccard_similarity(str1, str2):
@@ -1339,9 +1219,10 @@ if __name__ == '__main__':
     #res = update_bukti_keluar("https://res.cloudinary.com/jtk/image/upload/v1684497128/gwqd188isqicobc4yqc5.jpg", 52)
     #res = get_jml_problem_parkir()
     #res = add_mhs_masuk("test1", "test2", 0)
-    res = get_test()
+    #res = get_all_peringatan_gagal()
     #res = jaccard_similarity('AAAAAAAAAA', 'AAAAAAAAAB')
     #res2 = get_jml_keluar_parkir()
+    res = get_test()
     #res = update_izinkan_keluar("test/test.jpg", 34)
     print(res)
     #print(res2)
