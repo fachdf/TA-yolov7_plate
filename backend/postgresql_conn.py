@@ -22,8 +22,8 @@ def add_gate(type, status):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -68,8 +68,8 @@ def update_gate_status(id, status):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -115,8 +115,8 @@ def add_mhs_masuk(rfid, pelat, status):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -174,8 +174,8 @@ def update_mhs_keluar(rfid, status):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -232,8 +232,8 @@ def get_mhs_data_by_rfid(rfid):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -283,8 +283,8 @@ def get_mhs_data_by_pelat(pelat):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -335,8 +335,8 @@ def get_mhs_data_by_id(id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -384,8 +384,8 @@ def get_mhs_data_by_pelat(pelat):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
 
         # create a cursor object
@@ -437,8 +437,8 @@ def add_riwayat_masuk_with_bukti(bukti_masuk, id_mhs):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -486,8 +486,8 @@ def add_riwayat_masuk(id_mhs, keterangan):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -534,8 +534,8 @@ def add_riwayat_gagal(id_mhs, keterangan):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -582,8 +582,8 @@ def update_riwayat_gagal(id_mhs, keterangan):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -631,8 +631,8 @@ def update_bukti_masuk(bukti_masuk, user_id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -677,8 +677,8 @@ def update_bukti_gagal(bukti_gagal, user_id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -724,8 +724,8 @@ def update_riwayat_keluar_with_bukti(bukti_keluar, user_id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -773,8 +773,8 @@ def update_riwayat_keluar(user_id, keterangan):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -822,8 +822,8 @@ def update_bukti_keluar(bukti_keluar, user_id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -868,8 +868,8 @@ def update_izinkan_keluar(bukti_keluar, user_id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         keterangan = "Diizinkan keluar oleh Petugas"
         # Create a cursor object
@@ -915,8 +915,8 @@ def update_tolak_keluar(user_id):
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         keterangan = "Tidak diizinkan untuk keluar oleh petugas"
         # Create a cursor object
@@ -963,8 +963,8 @@ def get_all_riwayat_parkir():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -1009,8 +1009,8 @@ def get_all_riwayat_gagal():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -1058,8 +1058,8 @@ def get_all_peringatan_gagal():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -1105,8 +1105,8 @@ def get_jml_parkir():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -1152,8 +1152,8 @@ def get_jml_keluar_parkir():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -1200,8 +1200,8 @@ def get_jml_problem_parkir():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
@@ -1289,8 +1289,8 @@ def get_test():
             host= "localhost",
             port= "5432",
             database="gateparking",
-            user="postgres",
-            password="postgres"
+            user="pari",
+            password="kota407"
         )
         
         # Create a cursor object
