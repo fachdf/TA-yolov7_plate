@@ -79,7 +79,7 @@
         </v-data-table>
         <v-dialog v-model="dialogVisible" persistent width="auto" :elevation="0" dark>
           <v-img dark :src="popupLink" width="100%"></v-img>
-          <v-card-actions dark>
+          <v-card-actions class="solid-card-actions">
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="closeDialog" block variant="outlined" dark>
               Tutup
@@ -322,5 +322,9 @@ margin-top: 0px;
 
 .left-input input{
   text-align: left;
+}
+
+.solid-card-actions {
+  background-color: #ffffff; /* Replace with your desired solid color */
 }
 </style>

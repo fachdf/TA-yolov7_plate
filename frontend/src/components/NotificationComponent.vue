@@ -22,10 +22,10 @@
     </v-card-text>
     <v-card-actions>
       <v-dialog v-model="dialogVisible" persistent width="auto">
-        <v-img :src="popupLink" width="100%"></v-img>
-        <v-card-actions>
+        <v-img :src="popupLink" width="100%" height="100%"></v-img>
+        <v-card-actions class="solid-card-actions">
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="closeDialog">Tutup</v-btn>
+          <v-btn color="primary" block variant="outlined" text @click="closeDialog">Tutup</v-btn>
         </v-card-actions>
       </v-dialog>
       <v-dialog v-model="showKeteranganDialog" max-width="500px">
@@ -34,7 +34,7 @@
         <v-card-text>
           {{this.keterangan}}
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="solid-card-actions">
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="closeKeteranganDialog">Tutup</v-btn>
         </v-card-actions>
@@ -139,4 +139,7 @@ export default {
 </script>
 
 <style scoped>
+.solid-card-actions {
+  background-color: #ffffff; /* Replace with your desired solid color */
+}
 </style>
