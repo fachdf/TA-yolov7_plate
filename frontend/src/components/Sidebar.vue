@@ -13,7 +13,7 @@
 
           <div class="title">
           <v-list-item-content>
-            <v-list-item-title class="text-h6">Gate Parking Otomatis</v-list-item-title>
+            <v-list-item-title class="text-h6">Sistem Parkir</v-list-item-title>
           </v-list-item-content>
           </div>
         </v-list-item>
