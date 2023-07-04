@@ -13,6 +13,7 @@ def identifikasi_plat_nomor(photo):
         opt.detect_model = 'weights/last_v2.pt'
         opt.rec_model = 'weights/plate_rec.pth'
         opt.source = photo
+        #opt.source = 'data_riwayat/image_070709986564-17-19-26.jpg'
         opt.img_size = 640
         opt.output = 'result'
         opt.kpt_label = 4
@@ -32,3 +33,7 @@ def identifikasi_plat_nomor(photo):
 # RFID test = 1234567890
 # if __name__ == '__main__':
 #     #print(identifikasi_plat_nomor('https://res.cloudinary.com/jtk/image/upload/v1683964619/zuyfmjcg8wnzhfphmfuj.jpg'))
+
+if __name__ == '__main__':
+    #identifikasi_plat_nomor("data_riwayat/image_070709986564-17-19-26.jpg")
+    identifikasi_plat_nomor()

@@ -12,6 +12,11 @@ from plate_recognition.plate_rec import get_plate_result,allFilePath,init_model,
 from plate_recognition.double_plate_split_merge import get_split_merge
 from utils.datasets import letterbox
 from utils.cv_puttext import cv2ImgAddText
+import aspose.pycore as aspycore
+from aspose.imaging import Image, RasterImage, Color
+import random
+from datetime import datetime
+
 def cv_imread(path):
     img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),-1)
     return img
@@ -47,7 +52,19 @@ def four_point_transform(image, pts):  #透视变换
     warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
     return warped
 
-def get_plate_rec_landmark(img, xyxy, conf, landmarks, class_num,device,plate_rec_model):
+def get_plate_rec_landmark(img, xyxy, conf, landmarks, class_num, device,plate_rec_model, iteration):
+    # data_dir = "hasil_lokalisasi/"
+    # img_name = "result" + str(img) + "_deskew.jpg"
+    now = datetime.now() 
+    filename = "img" + now.strftime("-%H-%M-%S")
+    #img_name_default =  "result" + str(img) + ".jpg"  
+    original = "hasil_lokalisasi/" + filename + "_" + str(iteration) + "_original.jpg"
+    cv2.imwrite(original,img)
+    
+    # with aspycore.as_of(Image.load(os.path.join(data_dir, img)), RasterImage) as image:
+    #     image.normalize_angle(False, Color.light_gray)
+    #     image.save(os.path.join(data_dir, img_name))
+
     h,w,c = img.shape
     result_dict={}
     tl = 1 or round(0.002 * (h + w) / 2) + 1  # line/font thickness
@@ -56,6 +73,10 @@ def get_plate_rec_landmark(img, xyxy, conf, landmarks, class_num,device,plate_re
     y1 = int(xyxy[1])
     x2 = int(xyxy[2])
     y2 = int(xyxy[3])
+    before = "hasil_lokalisasi/" + filename + "_" + str(iteration) + "_before.jpg"
+    img_crop = img[y1:y2,x1:x2]
+    cv2.imwrite(before, img_crop)
+
     height=y2-y1
     landmarks_np=np.zeros((4,2))
     rect=[x1,y1,x2,y2]
@@ -66,7 +87,8 @@ def get_plate_rec_landmark(img, xyxy, conf, landmarks, class_num,device,plate_re
 
     class_label= int(class_num)  #车牌的的类型0代表单牌，1代表双层车牌
     roi_img = four_point_transform(img,landmarks_np)   #透视变换得到车牌小图
-    # cv2.imwrite("roi.jpg",roi_img)
+    #cv2.imwrite("photo3.jpg", roi_img)
+    
     # roi_img_h = roi_img.shape[0]
     # roi_img_w = roi_img.shape[1]
     # if roi_img_w/roi_img_h<3:
@@ -74,6 +96,8 @@ def get_plate_rec_landmark(img, xyxy, conf, landmarks, class_num,device,plate_re
     # h_w_r = roi_img_w/roi_img_h
     if class_label :        #判断是否是双层车牌，是双牌的话进行分割后然后拼接
         roi_img=get_split_merge(roi_img)
+    before = "hasil_lokalisasi/" + filename + "_" + str(iteration) + "_after.jpg"
+    cv2.imwrite(before, roi_img)
     plate_number = get_plate_result(roi_img,device,plate_rec_model)                 #对车牌小图进行识别
     
     result_dict['rect']=rect
@@ -110,7 +134,8 @@ def detect_Recognition_plate(model, orgimg, device,plate_rec_model,img_size):
                 landmarks = det[j, 6:].view(-1).tolist()
                 landmarks = [landmarks[0],landmarks[1],landmarks[3],landmarks[4],landmarks[6],landmarks[7],landmarks[9],landmarks[10]]
                 class_num = det[j, 5].cpu().numpy()
-                result_dict = get_plate_rec_landmark(orgimg, xyxy, conf, landmarks, class_num,device,plate_rec_model)
+                result_dict = get_plate_rec_landmark(orgimg, xyxy, conf, landmarks, class_num,device,plate_rec_model, j)
+                
                 dict_list.append(result_dict)
                 #print(f"class: {class_num[1]}")
     return dict_list
@@ -204,11 +229,13 @@ def main(opt):
         print(dict_list)
     else:
         print(dict_list[0]['plate_no'])
+    
     ori_img=draw_result(img,dict_list)
+    
     img_name = os.path.basename(pic_)
     save_img_path = os.path.join(opt.output,img_name)
     cv2.imwrite(save_img_path,ori_img)
-
+    #cv2.imwrite("roi03.jpg",ori_img)
     
     # for pic_ in file_list:
     #     print(pic_,end=" ")
