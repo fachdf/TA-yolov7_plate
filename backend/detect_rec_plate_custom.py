@@ -12,8 +12,6 @@ from plate_recognition.plate_rec import get_plate_result,allFilePath,init_model,
 from plate_recognition.double_plate_split_merge import get_split_merge
 from utils.datasets import letterbox
 from utils.cv_puttext import cv2ImgAddText
-import aspose.pycore as aspycore
-from aspose.imaging import Image, RasterImage, Color
 import random
 from datetime import datetime
 
